@@ -44,6 +44,59 @@ CREATE TABLE DischargePatient
 				ON DELETE CASCADE
 );
 
+CREATE TABLE Building 
+(
+	Building_BuildingID			    CHAR(9)     PRIMARY KEY
+);
+
+CREATE TABLE Floors 
+(	
+	Floor_BuildingID			    CHAR(9)     NOT NULL,
+    Floor_FloorID			        CHAR(9)     NOT NULL,
+    PRIMARY KEY (Floor_BuildingID, Floor_FloorID),
+    CONSTRAINT 	flo_from_buiid FOREIGN KEY (Floor_BuildingID)
+				REFERENCES Building(Building_BuildingID) 
+				ON DELETE CASCADE
+);
+
+CREATE TABLE Room 
+(	
+	Room_BuildingID			    CHAR(9)     NOT NULL,
+    Room_FloorID			    CHAR(9)     NOT NULL,
+    Room_RoomID			        CHAR(9)     NOT NULL,
+    Room_Type                   VARCHAR(20),
+    Room_Capacity               INT,
+    PRIMARY KEY (Room_BuildingID, Room_FloorID, Room_RoomID),
+    CONSTRAINT 	room_from_floid FOREIGN KEY (Room_BuildingID, Room_FloorID)
+				REFERENCES Floors(Floor_BuildingID, Floor_FloorID) 
+				ON DELETE CASCADE
+);
+
+-- Datatypes, Datalength, Constraints explanations:
+-- Giving 512 for each first_name and last_name will be safer.
+CREATE TABLE People 
+(	
+	People_ID			    CHAR(9)     PRIMARY KEY,
+    People_First_Name	    VARCHAR(512) NOT NULL, 
+    People_Last_Name        VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE Employee 
+(
+	Employee_EmployeeID			CHAR(9)     PRIMARY KEY,
+    CONSTRAINT 	emId_ppID FOREIGN KEY (Employee_EmployeeID)
+				REFERENCES People(People_ID) 
+				ON DELETE CASCADE
+);
+
+CREATE TABLE Nurse 
+(	
+	Nurse_NurseID			    CHAR(9)     PRIMARY KEY NOT NULL,
+    CONSTRAINT 	nurseId_EmID FOREIGN KEY (Nurse_NurseID)
+				REFERENCES Employee(Employee_EmployeeID) 
+				ON DELETE CASCADE
+);
+
 CREATE TABLE AdmittedPatient 
 (	
     AdmittedPatient_BuildingID          CHAR(9), 
@@ -51,15 +104,15 @@ CREATE TABLE AdmittedPatient
     AdmittedPatient_RoomID              CHAR(9), 
 	AdmittedPatient_PatientID	        CHAR(9)	PRIMARY KEY,
     AdmittedPatient_NurseID             CHAR(9) NOT NULL,
-    CONSTRAINT	fk_APbuilID_from_buiID	FOREIGN KEY (AdmittedPatient_BuildingID,AdmittedPatient_FloorID,AdmittedPatient_RoomID)
-				REFERENCES Room(Room_BuildingID,Room_FloorID,Room_RoomID)
-				ON DELETE SET NULL;
+    CONSTRAINT	fk_APbuilID_from_buiID	FOREIGN KEY (AdmittedPatient_BuildingID, AdmittedPatient_FloorID, AdmittedPatient_RoomID)
+				REFERENCES Room(Room_BuildingID, Room_FloorID, Room_RoomID)
+				ON DELETE SET NULL,
     CONSTRAINT 	fk_AdmitID_from_paID FOREIGN KEY (AdmittedPatient_PatientID)
 				REFERENCES Patient(Patient_PatientID) 
-				ON DELETE CASCADE,                
+				ON DELETE CASCADE,
     CONSTRAINT	fk_APnurseID_from_nurID	FOREIGN KEY (AdmittedPatient_NurseID)
 				REFERENCES Nurse(Nurse_NurseID)
-				ON DELETE SET NULL
+				ON DELETE CASCADE
 );
 
 -- Datatypes, Datalength, Constraints explanations:
@@ -97,23 +150,6 @@ CREATE TABLE Symptoms
 				ON DELETE CASCADE
 );
 
--- Datatypes, Datalength, Constraints explanations:
--- Giving 512 for each first_name and last_name will be safer.
-CREATE TABLE People 
-(	
-	People_ID			    CHAR(9)     PRIMARY KEY,
-    People_First_Name	    VARCHAR(512) NOT NULL, 
-    People_Last_Name        VARCHAR(512) NOT NULL
-);
-
-CREATE TABLE Employee 
-(
-	Employee_EmployeeID			CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	emId_ppID FOREIGN KEY (Employee_EmployeeID)
-				REFERENCES People(People_ID) 
-				ON DELETE CASCADE
-);
-
 CREATE TABLE Managers
 (	
 	Manager_ManagerID			CHAR(9)     PRIMARY KEY,
@@ -142,14 +178,6 @@ CREATE TABLE Staff
 (	
 	Staff_StaffID			    CHAR(9)     PRIMARY KEY,
     CONSTRAINT 	staffId_EmID FOREIGN KEY (Staff_StaffID)
-				REFERENCES Employee(Employee_EmployeeID) 
-				ON DELETE CASCADE
-);
-
-CREATE TABLE Nurse 
-(	
-	Nurse_NurseID			    CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	nurseId_EmID FOREIGN KEY (Nurse_NurseID)
 				REFERENCES Employee(Employee_EmployeeID) 
 				ON DELETE CASCADE
 );
@@ -189,7 +217,7 @@ CREATE TABLE Treatment
     Treatment_Admitted_PatientID	    CHAR(9)     NOT NULL, 
     Treatment_Start_Date	            DATE        NOT NULL, 
     Treatment_End_Date	                DATE        , 
-    Treatment_TreatmentID               CHAR(9)     NOT NULL,                --Add this extended attribute
+    Treatment_TreatmentID               CHAR(9)     NOT NULL,
     PRIMARY KEY (Treatment_Admitted_PatientID, Treatment_TreatmentID),
     CONSTRAINT 	treatID_from_adID FOREIGN KEY (Treatment_Admitted_PatientID)
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
@@ -236,40 +264,12 @@ CREATE TABLE TakeAction
 				REFERENCES Doctor(Doctor_DoctorID) 
 				ON DELETE CASCADE
 );
-
-CREATE TABLE Building 
-(	
-	Building_BuildingID			    CHAR(9)     PRIMARY KEY
-);
-
-CREATE TABLE Floors 
-(	
-	Floor_BuildingID			    CHAR(9)     NOT NULL,
-    Floor_FloorID			        CHAR(9)     NOT NULL,
-    PRIMARY KEY (Floor_BuildingID, Floor_FloorID),
-    CONSTRAINT 	flo_from_buiid FOREIGN KEY (Floor_BuildingID)
-				REFERENCES Building(Building_BuildingID) 
-				ON DELETE CASCADE
-);
-
-CREATE TABLE Room 
-(	
-	Room_BuildingID			    CHAR(9)     NOT NULL,
-    Room_FloorID			    CHAR(9)     NOT NULL,
-    Room_RoomID			        CHAR(9)     NOT NULL,
-    Room_Type                   VARCHAR(20),
-    Room_Capacity               INT,
-    PRIMARY KEY (Room_BuildingID, Room_FloorID, Room_RoomID),
-    CONSTRAINT 	room_from_floid FOREIGN KEY (Room_FloorID,Room_BuildingID)
-				REFERENCES Floors(Floor_FloorID,Floor_BuildingID) 
-				ON DELETE CASCADE
-);               
                 
 CREATE TABLE LocationHistory 
 (	
-	LocationHistory_BuildingID			  CHAR(9)       NOT NULL,
-    LocationHistory_FloorID			      CHAR(9)       NOT NULL,
-    LocationHistory_RoomID			      CHAR(9)       NOT NULL,
+	LocationHistory_BuildingID			  CHAR(9)       ,
+    LocationHistory_FloorID			      CHAR(9)       ,
+    LocationHistory_RoomID			      CHAR(9)       ,
     LocationHistory_Admitted_PatientID    CHAR(9)       NOT NULL,
     LocationHistory_HistoryID             DATE          NOT NULL,            
     -- Is it really safe to have history id as date?
@@ -294,7 +294,7 @@ CREATE TABLE Testing
     Testing_Admitted_PatientID	CHAR(9),
     CONSTRAINT 	Testing_pID_from_paID FOREIGN KEY (Testing_PatientID)
 				REFERENCES Patient(Patient_PatientID) 
-				ON DELETE SET NULL,
+				ON DELETE CASCADE,
     CONSTRAINT 	Testing_staffID_from_paID FOREIGN KEY (Testing_StaffID,Testing_Admitted_PatientID)
 				REFERENCES Admission(Admission_StaffID,Admission_PatientID) 
 				ON DELETE SET NULL
@@ -344,5 +344,21 @@ CREATE TABLE QuickTest
 				ON DELETE CASCADE,
     CONSTRAINT 	QuickTest_admitID_from_paID FOREIGN KEY (QuickTest_PatientID)
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
-				ON DELETE SET NULL
+				ON DELETE CASCADE
 );
+
+-- DELETE THIS LINE ON COMMIT:
+-- Two major problems that NKhoa fixed:
+-- * Foreign key dependency:
+-- The table referenced was defined after the table referencing, that is not allowed
+-- (I mean you could do this by combine everything into one transaction, but that is
+--  kinda complicated and requires additional learning, i dont think we have a lot of time to do that)
+-- So, after all, I change the order of tables, a lot of them
+--
+-- * NULL:
+-- In so many cases i see ON DELETE SET NULL on NOT NULL attributes.
+-- I am kinda confused since I do not really know what you was thinking.
+-- So i decided to change a bit so that could work. I do not really remember
+-- what i did change =)))))
+-- So in the future if something gets wrong, you can blame me for not "putting NOT NULL"
+-- somewhere. We probably fix them later if we have some trouble in implementation.
