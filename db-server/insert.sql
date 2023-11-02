@@ -1,0 +1,13 @@
+-- ======================================
+-- insert.sql
+-- 
+-- Author: NKhoa
+--
+-- Description:
+-- ..
+--
+-- Revision history:
+-- ..
+-- ======================================
+
+-- Insert values into Patient
