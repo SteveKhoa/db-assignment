@@ -1,11 +1,38 @@
+-- ======================================
+-- quaratine-camp-db.sql
+-- 
+-- Author: Kien Le, Editor: NKhoa
+--
+-- Description:
+-- This SQL code defines only (1) the definition of tables and (2) their foreign keys
+-- and (3) constraints applied on the table. Do not include other functionalities not related
+-- to the structure of the tables into this file. Please consider using another file for that purpose.
+--
+-- If a database for these tables already exists, that database will be overwritten with a new database.
+-- SO, USE THIS FILE ONLY WHEN YOU WANT THE NEWLY DEFINED DATABASE.
+--
+-- Revision history:
+-- 1. (02/11), nkhoa: propose a few changes
+-- ======================================
+
+DROP DATABASE IF EXISTS QUARATINE_CAMP_DB;
+
+CREATE DATABASE QUARATINE_CAMP_DB;
+
+USE QUARATINE_CAMP_DB;
+
+-- Datatypes, Datalength, Constraints explanations:
+-- VARCHAR(1024) should probably cover the longest case of fullname, (longest name on earth is 747 words)
+-- VARCHAR(512) should probably cover the longest case of address (the longest address on earth is about ~100 words)
+-- Patient_Phone, 10 digits because: https://en.sggp.org.vn/11-digit-mobile-phone-numbers-to-be-changed-to-10-digits-post72417.html
 CREATE TABLE Patient 
 (	
 	Patient_PatientID			CHAR(9)	    PRIMARY KEY ,
     Patient_Identity_Number     CHAR(9)     NOT NULL, 
-    Patient_Address		        VARCHAR(30),
+    Patient_Address		        VARCHAR(256),
     Patient_Gender			    CHAR(1),
-    Patient_Fullname		    VARCHAR(55)	NOT NULL,
-    Patient_Phone               CHAR(9)     NOT NULL
+    Patient_Fullname		    VARCHAR(1024)	NOT NULL,
+    Patient_Phone               CHAR(10)     NOT NULL
 );
 
 CREATE TABLE DischargePatient 
@@ -17,6 +44,59 @@ CREATE TABLE DischargePatient
 				ON DELETE CASCADE
 );
 
+CREATE TABLE Building 
+(
+	Building_BuildingID			    CHAR(9)     PRIMARY KEY
+);
+
+CREATE TABLE Floors 
+(	
+	Floor_BuildingID			    CHAR(9)     NOT NULL,
+    Floor_FloorID			        CHAR(9)     NOT NULL,
+    PRIMARY KEY (Floor_BuildingID, Floor_FloorID),
+    CONSTRAINT 	flo_from_buiid FOREIGN KEY (Floor_BuildingID)
+				REFERENCES Building(Building_BuildingID) 
+				ON DELETE CASCADE
+);
+
+CREATE TABLE Room 
+(	
+	Room_BuildingID			    CHAR(9)     NOT NULL,
+    Room_FloorID			    CHAR(9)     NOT NULL,
+    Room_RoomID			        CHAR(9)     NOT NULL,
+    Room_Type                   VARCHAR(20),
+    Room_Capacity               INT,
+    PRIMARY KEY (Room_BuildingID, Room_FloorID, Room_RoomID),
+    CONSTRAINT 	room_from_floid FOREIGN KEY (Room_BuildingID, Room_FloorID)
+				REFERENCES Floors(Floor_BuildingID, Floor_FloorID) 
+				ON DELETE CASCADE
+);
+
+-- Datatypes, Datalength, Constraints explanations:
+-- Giving 512 for each first_name and last_name will be safer.
+CREATE TABLE People 
+(	
+	People_ID			    CHAR(9)     PRIMARY KEY,
+    People_First_Name	    VARCHAR(512) NOT NULL, 
+    People_Last_Name        VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE Employee 
+(
+	Employee_EmployeeID			CHAR(9)     PRIMARY KEY,
+    CONSTRAINT 	emId_ppID FOREIGN KEY (Employee_EmployeeID)
+				REFERENCES People(People_ID) 
+				ON DELETE CASCADE
+);
+
+CREATE TABLE Nurse 
+(	
+	Nurse_NurseID			    CHAR(9)     PRIMARY KEY NOT NULL,
+    CONSTRAINT 	nurseId_EmID FOREIGN KEY (Nurse_NurseID)
+				REFERENCES Employee(Employee_EmployeeID) 
+				ON DELETE CASCADE
+);
+
 CREATE TABLE AdmittedPatient 
 (	
     AdmittedPatient_BuildingID          CHAR(9), 
@@ -24,15 +104,23 @@ CREATE TABLE AdmittedPatient
     AdmittedPatient_RoomID              CHAR(9), 
 	AdmittedPatient_PatientID	        CHAR(9)	PRIMARY KEY,
     AdmittedPatient_NurseID             CHAR(9) NOT NULL,
+    CONSTRAINT	fk_APbuilID_from_buiID	FOREIGN KEY (AdmittedPatient_BuildingID, AdmittedPatient_FloorID, AdmittedPatient_RoomID)
+				REFERENCES Room(Room_BuildingID, Room_FloorID, Room_RoomID)
+				ON DELETE SET NULL,
     CONSTRAINT 	fk_AdmitID_from_paID FOREIGN KEY (AdmittedPatient_PatientID)
 				REFERENCES Patient(Patient_PatientID) 
+				ON DELETE CASCADE,
+    CONSTRAINT	fk_APnurseID_from_nurID	FOREIGN KEY (AdmittedPatient_NurseID)
+				REFERENCES Nurse(Nurse_NurseID)
 				ON DELETE CASCADE
 );
 
+-- Datatypes, Datalength, Constraints explanations:
+-- Comorbidity should be 50 characters max, since the longest sickness name is 45 words long, https://en.wikipedia.org/wiki/Pneumonoultramicroscopicsilicovolcanoconiosis
 CREATE TABLE Comorbidity 
 (	
 	Comorbidity_PatientID		CHAR(9)	    NOT NULL,
-    Comorbidity_Comorbidity		VARCHAR(30) NOT NULL,
+    Comorbidity_Comorbidity		VARCHAR(50) NOT NULL,
     PRIMARY KEY (Comorbidity_PatientID, Comorbidity_Comorbidity),
     CONSTRAINT 	fk_ComoID_from_paID FOREIGN KEY (Comorbidity_PatientID)
 				REFERENCES Patient(Patient_PatientID) 
@@ -49,29 +137,16 @@ CREATE TABLE Symptom
 				ON DELETE CASCADE
 );
 
+-- Datatypes, Datalength, Constraints explanations:
+-- Same reason for comorbidity, the longest sickness name is 45 words, so giving it 50 words probably safe
 CREATE TABLE Symptoms 
-(	
+(
 	Symtoms_Time			DATE        NOT NULL,
     Symtoms_PatientID	    CHAR(9)     NOT NULL, 
-    Symtoms_Symptoms        VARCHAR(30) NOT NULL,
+    Symtoms_Symptoms        VARCHAR(50) NOT NULL,
     PRIMARY KEY (Symtoms_Time, Symtoms_PatientID, Symtoms_Symptoms),
     CONSTRAINT 	fk_symtime_from_symstim FOREIGN KEY (Symtoms_Time, Symtoms_PatientID)
 				REFERENCES Symptom(Symtom_Time,Symtom_PatientID) 
-				ON DELETE CASCADE
-);
-
-CREATE TABLE People 
-(	
-	People_ID			    CHAR(9)     PRIMARY KEY,
-    People_First_Name	    VARCHAR(15) NOT NULL, 
-    People_Last_Name        VARCHAR(15) NOT NULL
-);
-
-CREATE TABLE Employee 
-(	
-	Employee_EmployeeID			CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	emId_ppID FOREIGN KEY (Employee_EmployeeID)
-				REFERENCES People(People_ID) 
 				ON DELETE CASCADE
 );
 
@@ -107,19 +182,6 @@ CREATE TABLE Staff
 				ON DELETE CASCADE
 );
 
-CREATE TABLE Nurse 
-(	
-	Nurse_NurseID			    CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	nurseId_EmID FOREIGN KEY (Nurse_NurseID)
-				REFERENCES Employee(Employee_EmployeeID) 
-				ON DELETE CASCADE
-);
-
-ALTER TABLE AdmittedPatient
-ADD CONSTRAINT	fk_APnurseID_from_nurID	FOREIGN KEY (AdmittedPatient_NurseID)
-				REFERENCES Nurse(Nurse_NurseID)
-				ON DELETE SET NULL;
-
 CREATE TABLE HeadOfTheCamp 
 (	
 	HeadOfTheCamp_DoctorID			    CHAR(9)     NOT NULL,
@@ -133,13 +195,14 @@ CREATE TABLE HeadOfTheCamp
 				ON DELETE CASCADE
 );
 
-
+-- Datatypes, Datalength, Constraints explanations:
+-- Patient_Location should be 256 chars long, that is safer
 CREATE TABLE Admission 
 (	
     Admission_PatientID         CHAR(9) NOT NULL, 
     Admission_StaffID           CHAR(9) NOT NULL, 
     Admission_Date              DATE, 
-	Admission_Patient_Location	VARCHAR(30),
+	Admission_Patient_Location	VARCHAR(256),
     PRIMARY KEY (Admission_PatientID, Admission_StaffID),
     CONSTRAINT 	fk_admisID_from_adID FOREIGN KEY (Admission_PatientID)
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
@@ -154,7 +217,7 @@ CREATE TABLE Treatment
     Treatment_Admitted_PatientID	    CHAR(9)     NOT NULL, 
     Treatment_Start_Date	            DATE        NOT NULL, 
     Treatment_End_Date	                DATE        , 
-    Treatment_TreatmentID               CHAR(9)     NOT NULL,                --Add this extended attribute
+    Treatment_TreatmentID               CHAR(9)     NOT NULL,
     PRIMARY KEY (Treatment_Admitted_PatientID, Treatment_TreatmentID),
     CONSTRAINT 	treatID_from_adID FOREIGN KEY (Treatment_Admitted_PatientID)
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
@@ -201,47 +264,19 @@ CREATE TABLE TakeAction
 				REFERENCES Doctor(Doctor_DoctorID) 
 				ON DELETE CASCADE
 );
-
-CREATE TABLE Building 
-(	
-	Building_BuildingID			    CHAR(9)     PRIMARY KEY
-);
-
-CREATE TABLE Floors 
-(	
-	Floor_BuildingID			    CHAR(9)     NOT NULL,
-    Floor_FloorID			        CHAR(9)     NOT NULL,
-    PRIMARY KEY (Floor_BuildingID, Floor_FloorID),
-    CONSTRAINT 	flo_from_buiid FOREIGN KEY (Floor_BuildingID)
-				REFERENCES Building(Building_BuildingID) 
-				ON DELETE CASCADE
-);
-
-CREATE TABLE Room 
-(	
-	Room_BuildingID			    CHAR(9)     NOT NULL,
-    Room_FloorID			    CHAR(9)     NOT NULL,
-    Room_RoomID			        CHAR(9)     NOT NULL,
-    Room_Type                   VARCHAR(20),
-    Room_Capacity               INT,
-    PRIMARY KEY (Room_BuildingID, Room_FloorID, Room_RoomID),
-    CONSTRAINT 	room_from_floid FOREIGN KEY (Room_FloorID,Room_BuildingID)
-				REFERENCES Floors(Floor_FloorID,Floor_BuildingID) 
-				ON DELETE CASCADE
-);
-
-ALTER TABLE AdmittedPatient
-ADD CONSTRAINT	fk_APbuilID_from_buiID	FOREIGN KEY (AdmittedPatient_BuildingID,AdmittedPatient_FloorID,AdmittedPatient_RoomID)
-				REFERENCES Room(Room_BuildingID,Room_FloorID,Room_RoomID)
-				ON DELETE SET NULL;               
                 
 CREATE TABLE LocationHistory 
 (	
-	LocationHistory_BuildingID			  CHAR(9)       NOT NULL,
-    LocationHistory_FloorID			      CHAR(9)       NOT NULL,
-    LocationHistory_RoomID			      CHAR(9)       NOT NULL,
+	LocationHistory_BuildingID			  CHAR(9)       ,
+    LocationHistory_FloorID			      CHAR(9)       ,
+    LocationHistory_RoomID			      CHAR(9)       ,
     LocationHistory_Admitted_PatientID    CHAR(9)       NOT NULL,
-    LocationHistory_HistoryID             DATE          NOT NULL,            --Add this extended attribute
+    LocationHistory_HistoryID             DATE          NOT NULL,            
+    -- Is it really safe to have history id as date?
+    -- Because if a patient changes location history multiple times a day,
+    -- then the primary of (patient id, history id) will be the same in that day
+    -- not a good option.
+    -- NKhoa suggests using CHAR(9) instead of DATE
     PRIMARY KEY (LocationHistory_Admitted_PatientID, LocationHistory_HistoryID),
     CONSTRAINT	locationhis_APbuilID_from_buiID	FOREIGN KEY (LocationHistory_BuildingID,LocationHistory_FloorID,LocationHistory_RoomID)
 				REFERENCES Room(Room_BuildingID,Room_FloorID,Room_RoomID)
@@ -259,16 +294,21 @@ CREATE TABLE Testing
     Testing_Admitted_PatientID	CHAR(9),
     CONSTRAINT 	Testing_pID_from_paID FOREIGN KEY (Testing_PatientID)
 				REFERENCES Patient(Patient_PatientID) 
-				ON DELETE SET NULL,
+				ON DELETE CASCADE,
     CONSTRAINT 	Testing_staffID_from_paID FOREIGN KEY (Testing_StaffID,Testing_Admitted_PatientID)
 				REFERENCES Admission(Admission_StaffID,Admission_PatientID) 
 				ON DELETE SET NULL
 );
 
+-- Datatypes, Datalength, Constraints explanations:
+-- DECIMAL(2,0) is enough
+-- CT Values is an integer number, usually ranging from
+-- 0 (very infectious) to 40-45 (no virus at all)
+-- so i think an integer that has 2 digits is enough
 CREATE TABLE PCRTest 
 (	
 	PCRTest_TestID			    CHAR(9)        PRIMARY KEY,
-    PCRTest_Ct_Value	        DECIMAL(10,2), 
+    PCRTest_Ct_Value	        DECIMAL(2,0), 
     PCRTest_Result              VARCHAR(15),
     CONSTRAINT 	PCR_testID_from_test FOREIGN KEY (PCRTest_TestID)
 				REFERENCES Testing(Testing_TestID) 
@@ -298,11 +338,11 @@ CREATE TABLE QuickTest
 	QuickTest_TestID			CHAR(9)     PRIMARY KEY,
     QuickTest_PatientID	        CHAR(9)       NOT NULL,
     QuickTest_Result            VARCHAR(15), 
-    QuickTest_Ct_Value	        DECIMAL(10,2),
+    QuickTest_Ct_Value	        DECIMAL(2,0),
     CONSTRAINT 	QuickTest_testID_from_test FOREIGN KEY (QuickTest_TestID)
 				REFERENCES Testing(Testing_TestID) 
 				ON DELETE CASCADE,
     CONSTRAINT 	QuickTest_admitID_from_paID FOREIGN KEY (QuickTest_PatientID)
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
-				ON DELETE SET NULL
+				ON DELETE CASCADE
 );
