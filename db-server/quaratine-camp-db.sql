@@ -8,11 +8,18 @@
 -- and (3) constraints applied on the table. Do not include other functionalities not related
 -- to the structure of the tables into this file. Please consider using another file for that purpose.
 --
+-- If a database for these tables already exists, that database will be overwritten with a new database.
+-- SO, USE THIS FILE ONLY WHEN YOU WANT THE NEWLY DEFINED DATABASE.
+--
 -- Revision history:
 -- 1. (02/11), nkhoa: propose a few changes
 -- ======================================
 
-CREATE DATABASE IF NOT EXISTS QUARATINE_CAMP_DB;
+DROP DATABASE IF EXISTS QUARATINE_CAMP_DB;
+
+CREATE DATABASE QUARATINE_CAMP_DB;
+
+USE QUARATINE_CAMP_DB;
 
 -- Datatypes, Datalength, Constraints explanations:
 -- VARCHAR(1024) should probably cover the longest case of fullname, (longest name on earth is 747 words)
