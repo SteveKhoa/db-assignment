@@ -12,6 +12,8 @@
 -- 1. (02/11), nkhoa: propose a few changes
 -- ======================================
 
+CREATE DATABASE IF NOT EXISTS QUARATINE_CAMP_DB;
+
 -- Datatypes, Datalength, Constraints explanations:
 -- VARCHAR(1024) should probably cover the longest case of fullname, (longest name on earth is 747 words)
 -- VARCHAR(512) should probably cover the longest case of address (the longest address on earth is about ~100 words)
