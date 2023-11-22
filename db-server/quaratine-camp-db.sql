@@ -78,24 +78,30 @@ CREATE TABLE People
 (	
 	People_ID			    CHAR(9)     PRIMARY KEY,
     People_First_Name	    VARCHAR(512) NOT NULL, 
-    People_Last_Name        VARCHAR(512) NOT NULL
+    People_Last_Name        VARCHAR(512) NOT NULL,
+    -- adding start, using flag to determine type of people
+    People_Doctor_Flag      BOOLEAN,
+    People_Volunteer_Flag      BOOLEAN,
+    People_Staff_Flag      BOOLEAN,
+    People_Nurse_Flag      BOOLEAN,
+    People_Manager_Flag      BOOLEAN
 );
 
-CREATE TABLE Employee 
-(
-	Employee_EmployeeID			CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	emId_ppID FOREIGN KEY (Employee_EmployeeID)
-				REFERENCES People(People_ID) 
-				ON DELETE CASCADE
-);
+-- CREATE TABLE Employee 
+-- (
+-- 	Employee_EmployeeID			CHAR(9)     PRIMARY KEY,
+--     CONSTRAINT 	emId_ppID FOREIGN KEY (Employee_EmployeeID)
+-- 				REFERENCES People(People_ID) 
+-- 				ON DELETE CASCADE
+-- );
 
-CREATE TABLE Nurse 
-(	
-	Nurse_NurseID			    CHAR(9)     PRIMARY KEY NOT NULL,
-    CONSTRAINT 	nurseId_EmID FOREIGN KEY (Nurse_NurseID)
-				REFERENCES Employee(Employee_EmployeeID) 
-				ON DELETE CASCADE
-);
+-- CREATE TABLE Nurse 
+-- (	
+-- 	Nurse_NurseID			    CHAR(9)     PRIMARY KEY NOT NULL,
+--     CONSTRAINT 	nurseId_EmID FOREIGN KEY (Nurse_NurseID)
+-- 				REFERENCES Employee(Employee_EmployeeID) 
+-- 				ON DELETE CASCADE
+-- );
 
 CREATE TABLE AdmittedPatient 
 (	
@@ -104,6 +110,8 @@ CREATE TABLE AdmittedPatient
     AdmittedPatient_RoomID              CHAR(9), 
 	AdmittedPatient_PatientID	        CHAR(9)	PRIMARY KEY,
     AdmittedPatient_NurseID             CHAR(9) NOT NULL,
+    -- add date
+    AdmittedPatient_Take_Care_Date      DATE, -- the date detemine which nurse takes care which patient
     CONSTRAINT	fk_APbuilID_from_buiID	FOREIGN KEY (AdmittedPatient_BuildingID, AdmittedPatient_FloorID, AdmittedPatient_RoomID)
 				REFERENCES Room(Room_BuildingID, Room_FloorID, Room_RoomID)
 				ON DELETE SET NULL,
@@ -111,7 +119,7 @@ CREATE TABLE AdmittedPatient
 				REFERENCES Patient(Patient_PatientID) 
 				ON DELETE CASCADE,
     CONSTRAINT	fk_APnurseID_from_nurID	FOREIGN KEY (AdmittedPatient_NurseID)
-				REFERENCES Nurse(Nurse_NurseID)
+				REFERENCES People(People_ID)     -- Change from : Nurse(Nurse_NurseID)
 				ON DELETE CASCADE
 );
 
@@ -150,48 +158,51 @@ CREATE TABLE Symptoms
 				ON DELETE CASCADE
 );
 
-CREATE TABLE Managers
-(	
-	Manager_ManagerID			CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	maId_ppID FOREIGN KEY (Manager_ManagerID)
-				REFERENCES People(People_ID) 
-				ON DELETE CASCADE
-);
+-- CREATE TABLE Managers
+-- (	
+-- 	Manager_ManagerID			CHAR(9)     PRIMARY KEY,
+--     CONSTRAINT 	maId_ppID FOREIGN KEY (Manager_ManagerID)
+-- 				REFERENCES People(People_ID) 
+-- 				ON DELETE CASCADE
+-- );
 
-CREATE TABLE Doctor 
-(	
-	Doctor_DoctorID			    CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	DoId_EmID FOREIGN KEY (Doctor_DoctorID)
-				REFERENCES Employee(Employee_EmployeeID) 
-				ON DELETE CASCADE
-);
+-- CREATE TABLE Doctor 
+-- (	
+-- 	Doctor_DoctorID			    CHAR(9)     PRIMARY KEY,
+--     CONSTRAINT 	DoId_EmID FOREIGN KEY (Doctor_DoctorID)
+-- 				REFERENCES Employee(Employee_EmployeeID) 
+-- 				ON DELETE CASCADE
+-- );
 
-CREATE TABLE Volunteer 
-(	
-	Volunteer_VolunteerID		CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	VoId_EmID FOREIGN KEY (Volunteer_VolunteerID)
-				REFERENCES Employee(Employee_EmployeeID) 
-				ON DELETE CASCADE
-);
+-- CREATE TABLE Volunteer 
+-- (	
+-- 	Volunteer_VolunteerID		CHAR(9)     PRIMARY KEY,
+--     CONSTRAINT 	VoId_EmID FOREIGN KEY (Volunteer_VolunteerID)
+-- 				REFERENCES Employee(Employee_EmployeeID) 
+-- 				ON DELETE CASCADE
+-- );
 
-CREATE TABLE Staff 
-(	
-	Staff_StaffID			    CHAR(9)     PRIMARY KEY,
-    CONSTRAINT 	staffId_EmID FOREIGN KEY (Staff_StaffID)
-				REFERENCES Employee(Employee_EmployeeID) 
-				ON DELETE CASCADE
-);
+-- CREATE TABLE Staff 
+-- (	
+-- 	Staff_StaffID			    CHAR(9)     PRIMARY KEY,
+--     CONSTRAINT 	staffId_EmID FOREIGN KEY (Staff_StaffID)
+-- 				REFERENCES Employee(Employee_EmployeeID) 
+-- 				ON DELETE CASCADE
+-- );
 
 CREATE TABLE HeadOfTheCamp 
 (	
 	HeadOfTheCamp_DoctorID			    CHAR(9)     NOT NULL,
     HeadOfTheCamp_ManagerID			    CHAR(9)     NOT NULL,
     PRIMARY KEY (HeadOfTheCamp_DoctorID, HeadOfTheCamp_ManagerID),
-    CONSTRAINT 	headmaID_from_maID FOREIGN KEY (HeadOfTheCamp_ManagerID)
-				REFERENCES Managers(Manager_ManagerID) 
-				ON DELETE CASCADE,
-    CONSTRAINT 	headdoc_from_doctorID FOREIGN KEY (HeadOfTheCamp_DoctorID)
-				REFERENCES Doctor(Doctor_DoctorID) 
+    -- CONSTRAINT 	headmaID_from_maID FOREIGN KEY (HeadOfTheCamp_ManagerID)
+	-- 			REFERENCES Managers(Manager_ManagerID) 
+	-- 			ON DELETE CASCADE,
+    -- CONSTRAINT 	headdoc_from_doctorID FOREIGN KEY (HeadOfTheCamp_DoctorID)
+	-- 			REFERENCES Doctor(Doctor_DoctorID) 
+	-- 			ON DELETE CASCADE
+    CONSTRAINT 	headdoc_from_ma_doctorID FOREIGN KEY (HeadOfTheCamp_ManagerID,HeadOfTheCamp_DoctorID)
+				REFERENCES People(People_ID,People_ID) -- Managers(Manager_ManagerID); Doctor(Doctor_DoctorID)
 				ON DELETE CASCADE
 );
 
@@ -208,7 +219,7 @@ CREATE TABLE Admission
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
 				ON DELETE CASCADE,
     CONSTRAINT 	fk_adstaffID_from_staffID FOREIGN KEY (Admission_StaffID)
-				REFERENCES Staff(Staff_StaffID) 
+				REFERENCES People(People_ID) -- Staff(Staff_StaffID) 
 				ON DELETE CASCADE
 );
 
@@ -231,7 +242,7 @@ CREATE TABLE Perform
     Perform_TreatmentID             CHAR(9)     NOT NULL,
     PRIMARY KEY (Perform_DoctorID, Perform_Admitted_PatientID, Perform_TreatmentID),
     CONSTRAINT 	perform_docID_from_docID FOREIGN KEY (Perform_DoctorID)
-				REFERENCES Doctor(Doctor_DoctorID) 
+				REFERENCES People(People_ID) --Doctor(Doctor_DoctorID) 
 				ON DELETE CASCADE,
     CONSTRAINT 	perform_admitID_from_admitID FOREIGN KEY (Perform_Admitted_PatientID,Perform_TreatmentID)
 				REFERENCES Treatment(Treatment_Admitted_PatientID,Treatment_TreatmentID) 
@@ -261,7 +272,7 @@ CREATE TABLE TakeAction
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
 				ON DELETE CASCADE,
     CONSTRAINT 	takeactiondoc_from_doctorID FOREIGN KEY (TakeAction_DoctorID)
-				REFERENCES Doctor(Doctor_DoctorID) 
+				REFERENCES People(People_ID) --Doctor(Doctor_DoctorID) 
 				ON DELETE CASCADE
 );
                 
