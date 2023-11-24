@@ -7,39 +7,38 @@
 --=========== DRAFT file, NOT testing yet====================
 --===========================================================
 
--- Create a stored procedure
-CREATE PROCEDURE SortNursesByPatientCount(
-    IN StartDate DATE,
-    IN EndDate DATE
+CREATE PROCEDURE SortNursesByPatients(
+    IN startDate DATE,
+    IN endDate DATE
 )
 BEGIN
-    -- Create a temporary table to store nurse patient counts
-    CREATE TEMPORARY TABLE TempNursePatientCount AS
-    WITH NursePatientCount AS (
-        SELECT
-            ap.AdmittedPatient_NurseID,
-            COUNT(ap.AdmittedPatient_PatientID) AS PatientCount
-        FROM
-            AdmittedPatient ap
-        WHERE
-            ap.AdmittedPatient_Take_Care_Date BETWEEN StartDate AND EndDate
-        GROUP BY
-            ap.AdmittedPatient_NurseID
-    )
+    -- Create a temporary table to store the nurse ID and the count of patients they take care of
+    CREATE TEMPORARY TABLE NursePatientCount AS
     SELECT
-        npc.People_ID AS NurseID,
-        npc.People_First_Name AS FirstName,
-        npc.People_Last_Name AS LastName,
-        npc.PatientCount
+        ap.AdmittedPatient_NurseID AS NurseID,
+        COUNT(a.Admission_PatientID) AS PatientCount
     FROM
-        NursePatientCount npc
-    JOIN
-        People p ON npc.People_ID = p.People_ID
+        Admission a
+    JOIN AdmittedPatient ap ON a.Admission_PatientID = ap.AdmittedPatient_PatientID
     WHERE
-        p.People_Nurse_Flag = TRUE
+        a.Admission_Date BETWEEN startDate AND endDate
+    GROUP BY
+        ap.AdmittedPatient_NurseID;
+
+    -- Retrieve the nurse details and sort them based on the patient count
+    SELECT
+        p.People_ID AS NurseID,
+        p.People_First_Name,
+        p.People_Last_Name,
+        NPC.PatientCount
+    FROM
+        People p
+    JOIN NursePatientCount NPC ON p.People_ID = NPC.NurseID
+    WHERE
+        p.People_eType = 'N'
     ORDER BY
-        npc.PatientCount DESC;
+        NPC.PatientCount DESC;
 
     -- Drop the temporary table
-    DROP TEMPORARY TABLE IF EXISTS TempNursePatientCount;
-END;
+    DROP TEMPORARY TABLE IF EXISTS NursePatientCount;
+END; 
