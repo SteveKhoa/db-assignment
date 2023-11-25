@@ -18,25 +18,6 @@ function changeBackground(btn) {
     currentBtn = btn;
 }
 
-function searchProcess() {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            var xml_data = xmlhttp.responseXML;
-            var content = document.getElementById("content");
-            content.innerHTML = "";
-            content.appendChild(patientInformationUI(xml_data));
-        }
-    }
-
-    // xmlhttp.open("GET", "searchProcessing.php");
-    // xmlhttp.send();
-
-    var content = document.getElementById("content");
-    content.innerHTML = "";
-    content.appendChild(patientInformationUI());
-}
-
 
 function AddBtnClickOn() {
     navBtnClickon(document.getElementById("addBtn"));
@@ -45,7 +26,7 @@ function AddBtnClickOn() {
     searchArea.innerHTML = "";
 
     var contentArea = document.getElementById("content");
-    fetch("./addPatient.php")
+    fetch("./model-addPatient.php")
         .then(response => response.text())
         .then(htmlContent => { contentArea.innerHTML = htmlContent });
 }

@@ -43,7 +43,7 @@ function patientInformationUI(itemList) {
 function searchBarUI() 
 {
     var mainContainer = document.createElement("div");
-    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border border-3 border-success";
+    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
     mainContainer.style.width = "50%";
     mainContainer.style.marginLeft = "10px";
 

@@ -15,13 +15,12 @@ function titleReport() {
     return mainContainer;
 }
 
-function patientInfoUI(patientInfo) 
-{
+function patientInfoUI(patientInfo) {
     var divElement = document.createElement("div");
     divElement.className = "border border-3 border-gray rounded-3";
     divElement.style.width = "80%";
 
-    fetch("Test/patientInfo.php")
+    fetch("Test/model-patientInfo.php")
         .then(response => response.text())
         .then(htmlContent => {
             divElement.innerHTML += htmlContent;
@@ -85,7 +84,7 @@ function tableSymptomUI(SymptomList) {
     // Create the anchor element within the first div (The button for collapse)
     var anchorElement = document.createElement("a");
     anchorElement.style.height = "30px"; anchorElement.style.width = "200px";
-    anchorElement.className = "btn btn-outline-primary text-lg";
+    anchorElement.className = "btn btn-outline-primary text-start d-flex align-items-center collapsed";
     anchorElement.href = "#tableSymptoms";
     anchorElement.setAttribute("data-bs-toggle", "collapse");
     anchorElement.textContent = "Table Symptoms";
@@ -108,84 +107,153 @@ function tableSymptomUI(SymptomList) {
     return [div1, div2];
 }
 
+// function listTestingUI(testingList) {
+//     function testingCardUI(order, testingInfo) {
+//         const centerDiv = document.createElement("div");
+//         centerDiv.className = "d-flex flex-column align-items-center";
+
+//         const cardDiv = document.createElement('div');
+//         cardDiv.className = 'card mb-3';
+//         cardDiv.style.width = "80%";
+
+//         centerDiv.appendChild(cardDiv);
+
+//         // Create the card header
+//         const cardHeaderDiv = document.createElement('div');
+//         cardHeaderDiv.className = 'card-header';
+
+//         // Create the anchor tag within the card header
+//         const anchorTag = document.createElement('a');
+//         anchorTag.className = 'btn';
+//         anchorTag.setAttribute('data-bs-toggle', 'collapse');
+//         anchorTag.setAttribute('href', '#collapse' + order);
+//         anchorTag.textContent = 'Quick Test';
+
+//         // Append the anchor tag to the card header
+//         cardHeaderDiv.appendChild(anchorTag);
+
+//         // Create the collapse div
+//         const collapseDiv = document.createElement('div');
+//         collapseDiv.id = 'collapse' + order;
+//         collapseDiv.className = 'collapse';
+//         collapseDiv.setAttribute('data-bs-parent', '#accordion');
+
+//         // Create the card body
+//         const cardBodyDiv = document.createElement('div');
+//         cardBodyDiv.className = 'card-body';
+
+//         // Add paragraphs to the card body
+//         const resultParagraph = document.createElement('p');
+//         resultParagraph.textContent = 'Result: ';
+
+//         const ctValueParagraph = document.createElement('p');
+//         ctValueParagraph.textContent = 'CT Value: ';
+
+//         // Append paragraphs to the card body
+//         cardBodyDiv.appendChild(resultParagraph);
+//         cardBodyDiv.appendChild(ctValueParagraph);
+
+//         // Append the card body to the collapse div
+//         collapseDiv.appendChild(cardBodyDiv);
+
+//         // Append the card header and collapse div to the card div
+//         cardDiv.appendChild(cardHeaderDiv);
+//         cardDiv.appendChild(collapseDiv);
+
+//         return centerDiv;
+//     }
+
+//     var div1 = document.createElement("div");
+//     div1.style.margin = "10px 0 10px 0";
+
+//     // Create the anchor element within the first div
+//     var anchorElement = document.createElement("a");
+//     anchorElement.style.height = "30px"; anchorElement.style.width = "200px";
+//     anchorElement.className = "btn btn-outline-primary text-start d-flex align-items-center collapsed";
+//     anchorElement.href = "#listTesting";
+//     anchorElement.setAttribute("data-bs-toggle", "collapse");
+//     anchorElement.textContent = "List of Testing Detail";
+
+//     // Append the anchor element to the first div
+//     div1.appendChild(anchorElement);
+
+//     // Create the second div
+//     var div2 = document.createElement("div");
+//     div2.id = "listTesting";
+//     div2.className = "collapse";
+
+//     for (var i = 0; i < 2; i++) {
+//         div2.appendChild(testingCardUI(i, null));
+//     }
+
+//     return [div1, div2];
+// }
+
 function listTestingUI(testingList) {
-    function testingCardUI(order, testingInfo) {
-        const centerDiv = document.createElement("div");
-        centerDiv.className = "d-flex flex-column align-items-center";
+    function TestRow(testingInfo) {
+        var row = document.createElement("tr");
 
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'card mb-3';
-        cardDiv.style.width = "80%";
+        var col1 = document.createElement("td");
+        col1.innerHTML = "SPO2";
 
-        centerDiv.appendChild(cardDiv);
+        row.appendChild(col1);
 
-        // Create the card header
-        const cardHeaderDiv = document.createElement('div');
-        cardHeaderDiv.className = 'card-header';
+        return row;
+    }
 
-        // Create the anchor tag within the card header
-        const anchorTag = document.createElement('a');
-        anchorTag.className = 'btn';
-        anchorTag.setAttribute('data-bs-toggle', 'collapse');
-        anchorTag.setAttribute('href', '#collapse' + order);
-        anchorTag.textContent = 'Quick Test';
+    function createTestTable(testingList) {
+        var tableElement = document.createElement("table");
+        tableElement.className = "table table-hover text-center";
 
-        // Append the anchor tag to the card header
-        cardHeaderDiv.appendChild(anchorTag);
+        // Create the table header (thead)
+        var theadElement = document.createElement("thead");
+        var headerRow = document.createElement("tr");
 
-        // Create the collapse div
-        const collapseDiv = document.createElement('div');
-        collapseDiv.id = 'collapse' + order;
-        collapseDiv.className = 'collapse';
-        collapseDiv.setAttribute('data-bs-parent', '#accordion');
+        // Add th elements to the header row
+        var thSymptom = document.createElement("th");
+        thSymptom.textContent = "Test";
+        headerRow.appendChild(thSymptom);
 
-        // Create the card body
-        const cardBodyDiv = document.createElement('div');
-        cardBodyDiv.className = 'card-body';
+        // Append the header row to the thead
+        theadElement.appendChild(headerRow);
 
-        // Add paragraphs to the card body
-        const resultParagraph = document.createElement('p');
-        resultParagraph.textContent = 'Result: ';
+        // Create the table body (tbody)
+        var tbodyElement = document.createElement("tbody");
 
-        const ctValueParagraph = document.createElement('p');
-        ctValueParagraph.textContent = 'CT Value: ';
+        for (var i = 0; i < 2; i++) {
+            tbodyElement.appendChild(TestRow());
+        }
 
-        // Append paragraphs to the card body
-        cardBodyDiv.appendChild(resultParagraph);
-        cardBodyDiv.appendChild(ctValueParagraph);
-
-        // Append the card body to the collapse div
-        collapseDiv.appendChild(cardBodyDiv);
-
-        // Append the card header and collapse div to the card div
-        cardDiv.appendChild(cardHeaderDiv);
-        cardDiv.appendChild(collapseDiv);
-
-        return centerDiv;
+        tableElement.appendChild(theadElement);
+        tableElement.appendChild(tbodyElement);
+        return tableElement;
     }
 
     var div1 = document.createElement("div");
     div1.style.margin = "10px 0 10px 0";
 
-    // Create the anchor element within the first div
+    // Create the anchor element within the first div (The button for collapse)
     var anchorElement = document.createElement("a");
     anchorElement.style.height = "30px"; anchorElement.style.width = "200px";
-    anchorElement.className = "btn btn-outline-primary text-lg";
-    anchorElement.href = "#listTesting";
+    anchorElement.className = "btn btn-outline-primary text-start d-flex align-items-center collapsed";
+    anchorElement.href = "#tableTests";
     anchorElement.setAttribute("data-bs-toggle", "collapse");
-    anchorElement.textContent = "List of Testing Detail";
+    anchorElement.textContent = "Table Tests";
 
-    // Append the anchor element to the first div
+    // Append the anchor element to the first div (The collapse area)
     div1.appendChild(anchorElement);
 
     // Create the second div
     var div2 = document.createElement("div");
-    div2.id = "listTesting";
+    div2.id = "tableTests";
     div2.className = "collapse";
 
-    for (var i = 0; i < 2; i++) {
-        div2.appendChild(testingCardUI(i, null));
-    }
+    const centerDiv = document.createElement("div");
+    centerDiv.className = "d-flex flex-column align-items-center";
+    div2.appendChild(centerDiv);
+
+    // Create the Table (The table in the collapse area)
+    centerDiv.appendChild(createTestTable(testingList));
 
     return [div1, div2];
 }
@@ -196,7 +264,7 @@ function listTreatmentUI(treatmentList) {
 
     // Create the anchor element within the first div
     var anchorElement = document.createElement("a");
-    anchorElement.className = "btn btn-outline-primary text-lg";
+    anchorElement.className = "btn btn-outline-primary text-start d-flex align-items-center collapsed";
     anchorElement.style.height = "30px"; anchorElement.style.width = "200px";
     anchorElement.href = "#listTreatment";
     anchorElement.setAttribute("data-bs-toggle", "collapse");
@@ -209,13 +277,13 @@ function listTreatmentUI(treatmentList) {
     var div2 = document.createElement("div");
     div2.id = "listTreatment";
     div2.className = "collapse";
-    
+
     const centerDiv = document.createElement("div");
     centerDiv.className = "d-flex flex-column align-items-center";
     div2.appendChild(centerDiv);
 
 
-    fetch("Test/listTreatment.php")
+    fetch("Test/model-listTreatment.php")
         .then(response => response.text())
         .then(htmlContent => {
             centerDiv.innerHTML += htmlContent;
@@ -258,7 +326,7 @@ function reportUI(patient) {
 
 function ReportsearchBarUI() {
     var mainContainer = document.createElement("div");
-    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border border-3 border-success";
+    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
     mainContainer.style.width = "50%";
     mainContainer.style.marginLeft = "10px";
 

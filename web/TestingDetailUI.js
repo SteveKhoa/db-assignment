@@ -1,7 +1,5 @@
-function TestingListUI()
-{
-    function TestingSlotUI(order, testInfo)
-    {
+function TestingListUI() {
+    function TestingSlotUI(order, testInfo) {
         var mainContainer = document.createElement("div");
         mainContainer.className = "card mb-3";
 
@@ -34,14 +32,18 @@ function TestingListUI()
 
         // Create paragraphs within the card body (Fix into FOR LOOP)
         var resultParagraph = document.createElement("p");
-        resultParagraph.textContent = "Result: ";
+        resultParagraph.textContent = "Result: Positive";
 
         var ctValueParagraph = document.createElement("p");
-        ctValueParagraph.textContent = "CT Value: ";
+        ctValueParagraph.textContent = "CT Value: 10";
 
+        var patientInfo = document.createElement("p");
+        patientInfo.textContent = "Patient: Patient 1";
+
+        cardBody.appendChild(patientInfo);
         cardBody.appendChild(resultParagraph);
         cardBody.appendChild(ctValueParagraph);
-        
+
         // Append card header and card body to the main container
         mainContainer.appendChild(cardHeader);
         mainContainer.appendChild(cardCollapse);
@@ -58,7 +60,7 @@ function TestingListUI()
     firstNestedDiv.className = "border border-3 bg-warning d-flex justify-content-center rounded-3 mb-4 mt-2";
     firstNestedDiv.style.height = "10%";
     firstNestedDiv.style.width = "70%";
-    
+
     // Create an h2 element within the first nested div
     var h2Element = document.createElement("h2");
     h2Element.textContent = "Testing Table";
@@ -70,8 +72,7 @@ function TestingListUI()
     var secondNestedDiv = document.createElement("div");
     secondNestedDiv.style.width = "60%";
 
-    for (var i = 0; i < 3; i++) 
-    {
+    for (var i = 0; i < 3; i++) {
         secondNestedDiv.appendChild(TestingSlotUI(i));
     }
 
@@ -82,10 +83,9 @@ function TestingListUI()
     return mainContainer;
 }
 
-function TestsearchBarUI() 
-{
+function TestsearchBarUI() {
     var mainContainer = document.createElement("div");
-    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border border-3 border-success";
+    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
     mainContainer.style.width = "50%";
     mainContainer.style.marginLeft = "10px";
 
@@ -96,9 +96,8 @@ function TestsearchBarUI()
     inputElement.id = "name";
     inputElement.placeholder = "Enter email";
     inputElement.name = "name";
-    inputElement.addEventListener("keypress", function(event) {
-        if (event.key === "Enter")
-        {
+    inputElement.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
             var content = document.getElementById("content");
             content.innerHTML = "";
             content.appendChild(TestingListUI());

@@ -37,9 +37,7 @@ include "head.php";
     </nav>
 
     <div id="searchArea"></div>
-    <div id="content">
-
-    </div>
+    <div id="content"></div>
 
 </body>
 
