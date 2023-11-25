@@ -56,6 +56,7 @@ CREATE TABLE Room
     Room_RoomID			        CHAR(9)     NOT NULL,
     Room_Type                   CHAR(1),
     Room_Capacity               INT,
+    PRIMARY KEY(Room_BuildingID, Room_FloorID, Room_RoomID)
 );
 
 -- Datatypes, Datalength, Constraints explanations:
@@ -109,11 +110,11 @@ CREATE TABLE Comorbidity
 
 CREATE TABLE Symptoms 
 (
-	Symtoms_Time			DATE        NOT NULL,
-    Symtoms_PatientID	    CHAR(9)     NOT NULL, 
-    Symtoms_Symptoms        VARCHAR(50) NOT NULL,
-    PRIMARY KEY (Symtoms_Time, Symtoms_PatientID, Symtoms_Symptoms),
-    CONSTRAINT 	fk_symID_from_paID FOREIGN KEY (Symtoms_PatientID)
+	Symptoms_Time			DATE        NOT NULL,
+    Symptoms_PatientID	    CHAR(9)     NOT NULL, 
+    Symptoms_Symptoms        VARCHAR(50) NOT NULL,
+    PRIMARY KEY (Symptoms_Time, Symptoms_PatientID, Symptoms_Symptoms),
+    CONSTRAINT 	fk_symID_from_paID FOREIGN KEY (Symptoms_PatientID)
 				REFERENCES Patient(Patient_PatientID) 
 				ON DELETE CASCADE
 );
@@ -123,7 +124,7 @@ CREATE TABLE Managers
 	Manager_ManagerID			CHAR(9)     PRIMARY KEY,
     CONSTRAINT 	maId_ppID FOREIGN KEY (Manager_ManagerID)
 				REFERENCES People(People_ID) 
-				ON DELETE CASCADE,
+				ON DELETE CASCADE
 );
 
 CREATE TABLE HeadOfTheCamp 
