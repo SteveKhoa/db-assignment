@@ -153,7 +153,7 @@ CREATE TABLE Admission
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
 				ON DELETE CASCADE,
     CONSTRAINT 	fk_adstaffID_from_staffID FOREIGN KEY (Admission_StaffID)
-				REFERENCES People(People_ID) 
+				REFERENCES People(People_ID)
 				ON DELETE CASCADE
 );
 

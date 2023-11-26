@@ -7,6 +7,7 @@ include "head.php";
     $.getScript("searchUI.js");
     $.getScript("TestingDetailUI.js");
     $.getScript("ReportingUI.js");
+    $.getScript("addPatient.js");
 </script>
 
 <body>
