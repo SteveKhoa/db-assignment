@@ -1,6 +1,4 @@
 -- ======================================
--- insert.sql
--- 
 -- Author: NKhoa
 --
 -- Description:
