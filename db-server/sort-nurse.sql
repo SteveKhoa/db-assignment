@@ -1,11 +1,13 @@
---===========================================================
+-- ===========================================================
 -- Write a procedure to sort the nurses in decreasing number of patients 
 --       he/she  takes care in a period of time (1 mark).  
 -- Input: Start date, End date 
 -- Output: A list of sorting nurses. 
---===========================================================
---=========== DRAFT file, NOT testing yet====================
---===========================================================
+-- ===========================================================
+-- =========== DRAFT file, NOT testing yet====================
+-- ===========================================================
+
+USE QUARATINE_CAMP_DB;
 
 CREATE PROCEDURE SortNursesByPatients(
     IN startDate DATE,
