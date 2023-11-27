@@ -1,18 +1,16 @@
-function patientInformationUI(itemList) {
-    function patientInfoCard(headerValue, contentValue) {
+function createPatientSlot(patientInfo, order) {
+
+    function createCard(headerText, bodyText) {
         var cardDiv = document.createElement("div");
-        cardDiv.className = "card rounded-3 mb-2";
-        cardDiv.style.height = "20%";
-        cardDiv.style.width = "80%";
+        cardDiv.classList.add("card", "rounded-3", "mb-2");
 
         var cardHeader = document.createElement("div");
-        cardHeader.className = "card-header";
-        cardHeader.style.size = "20%";
-        cardHeader.textContent = headerValue;
+        cardHeader.classList.add("card-header");
+        cardHeader.textContent = headerText;
 
         var cardBody = document.createElement("div");
-        cardBody.className = "card-body";
-        cardBody.textContent = contentValue;
+        cardBody.classList.add("card-body");
+        cardBody.textContent = bodyText;
 
         cardDiv.appendChild(cardHeader);
         cardDiv.appendChild(cardBody);
@@ -20,6 +18,71 @@ function patientInformationUI(itemList) {
         return cardDiv;
     }
 
+    // Create a new div element
+    var mainDiv = document.createElement("div");
+    mainDiv.classList.add("border", "border-primary", "rounded-3", "mb-2");
+    mainDiv.style.width = "80%";
+
+    // Create a button element
+    var button = document.createElement("button");
+    button.classList.add("btn", "w-100");
+    button.setAttribute("data-bs-toggle", "collapse");
+    button.setAttribute("data-bs-target", "#patient" + order);
+
+    // Create a ul element
+    var ul = document.createElement("ul");
+    ul.classList.add("navbar-nav", "mb-2", "mb-lg-0", "d-flex", "flex-row");
+
+    // Create li elements
+    var li1 = document.createElement("li");
+    li1.classList.add("nav-item");
+    var span1 = document.createElement("span");
+    span1.classList.add("label", "label-primary", "h5");
+    span1.textContent = "Patient: Nguyen Van A";
+    li1.appendChild(span1);
+
+    var li2 = document.createElement("li");
+    li2.classList.add("nav-item", "ms-auto");
+    var span2 = document.createElement("span");
+    span2.classList.add("label", "label-primary", "h5");
+    span2.textContent = "ID: 1";
+    li2.appendChild(span2);
+
+    // Append li elements to ul
+    ul.appendChild(li1);
+    ul.appendChild(li2);
+
+    // Append ul to button
+    button.appendChild(ul);
+
+    // Append button to mainDiv
+    mainDiv.appendChild(button);
+
+    // Create a div element for patient information
+    var patientInfoDiv = document.createElement("div");
+    patientInfoDiv.id = "patient" + order;
+    patientInfoDiv.classList.add("collapse");
+    patientInfoDiv.style.margin = "5px";
+
+    // Create card elements for patient information (If want to create more information => Add to here).
+    var card1 = createCard("Name", "Name");
+    var card2 = createCard("Phone number", "111222333");
+    var card3 = createCard("Comorbidity", "Cold, Headache");
+
+    // Append card elements to patientInfoDiv
+    patientInfoDiv.appendChild(card1);
+    patientInfoDiv.appendChild(card2);
+    patientInfoDiv.appendChild(card3);
+
+    // Append patientInfoDiv to mainDiv
+    mainDiv.appendChild(patientInfoDiv);
+
+    return mainDiv;
+}
+
+function patientInformationUI(itemList) {
+
+    // Create Topic Div
     var mainContainer = document.createElement("div");
     mainContainer.className = "border border-3 border-warning rounded-3 d-flex flex-column align-items-center";
     mainContainer.style.margin = "10px 20%";
@@ -34,14 +97,13 @@ function patientInformationUI(itemList) {
 
     // Create the card divs dynamically
     for (var i = 0; i < 4; i++) {
-        mainContainer.appendChild(patientInfoCard("Header", "Content"));
+        mainContainer.appendChild(createPatientSlot(null, i));
     }
 
     return mainContainer;
 }
 
-function searchBarUI() 
-{
+function searchBarUI() {
     var mainContainer = document.createElement("div");
     mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
     mainContainer.style.width = "50%";
@@ -54,9 +116,8 @@ function searchBarUI()
     inputElement.id = "name";
     inputElement.placeholder = "Enter email";
     inputElement.name = "name";
-    inputElement.addEventListener("keypress", function(event) {
-        if (event.key === "Enter")
-        {
+    inputElement.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
             var content = document.getElementById("content");
             content.innerHTML = "";
             content.appendChild(patientInformationUI());
