@@ -49,9 +49,15 @@ def fetch_sheet_json(spreadsheetID, sheetName, A1Range):
         headers={"x-goog-api-key": get_api_key()},
     )
 
-    if response.status_code == 403:
+    if response.status_code == 200:
+        pass
+    elif response.status_code == 403:
         print("Error: Unauthorized access")
-        exit()
+        exit() 
+    else:
+        print("Warning: fetch_json: No handler for {}".format(response.status_code))
+        print("Full json request: ")
+        print(json.dumps(response.json(), indent=2))
 
     return response.json()
 
@@ -62,7 +68,9 @@ def main():
         ("PATIENT", "A2:F6", "template_patient.sql"),
         ("PEOPLE", "A2:D6", "template_people.sql"),
         ("ROOM", "A2:E6", "template_room.sql"),
-        ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql")
+        ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql"),
+        ("TREATMENT", "A2:D6", "template_treatm ent.sql"),
+        ("PERFORM", "A2:C6", "template_perform.sql")
     ]
 
     for sheet, a1_range, template_query_file in sheet_list:
