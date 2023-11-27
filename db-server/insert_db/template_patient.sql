@@ -4,9 +4,9 @@ INSERT INTO
     QUARATINE_CAMP_DB.Patient (
         Patient_PatientID,
         Patient_Identity_Number,
-        Patient_Address,
-        Patient_Gender,
         Patient_Fullname,
+        Patient_Gender,
+        Patient_Address,
         Patient_Phone
     )
 VALUES
