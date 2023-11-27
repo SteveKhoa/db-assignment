@@ -1,5 +1,10 @@
-function TestingListUI() {
-    function TestingSlotUI(order, testInfo) {
+
+// This will generate the slot for each patients with the specific name
+function TestingSlot(patientInfo, order) {
+
+    // This will generate the card for each testing of a specific patient.
+    function TestingCard(testInfo, order) {
+
         var mainContainer = document.createElement("div");
         mainContainer.className = "card mb-3";
 
@@ -51,6 +56,51 @@ function TestingListUI() {
         return mainContainer;
     }
 
+    // Main div for containing the button and the collapse area
+    var mainDiv = document.createElement("div");
+    mainDiv.className = "border border-primary rounded-3 mb-2";
+
+    // Create a button element
+    var button = document.createElement("button");
+    button.classList.add("btn", "w-100");
+    button.setAttribute("data-bs-toggle", "collapse");
+    button.setAttribute("data-bs-target", "#patient" + order);
+
+    // Create a ul element
+    var ul = document.createElement("ul");
+    ul.classList.add("navbar-nav", "mb-2", "mb-lg-0", "d-flex", "flex-row");
+
+    // Create li elements
+    var li1 = document.createElement("li"); li1.classList.add("nav-item");
+    var span1 = document.createElement("span"); span1.classList.add("label", "label-primary", "h5"); span1.textContent = "Nguyen Van A";
+    li1.appendChild(span1);
+
+    var li2 = document.createElement("li"); li2.classList.add("nav-item", "ms-auto");
+    var span2 = document.createElement("span"); span2.classList.add("label", "label-primary", "h5"); span2.textContent = "ID: 1";
+    li2.appendChild(span2);
+
+    // Append li elements to ul
+    ul.appendChild(li1);
+    ul.appendChild(li2);
+
+    // Append ul to button
+    button.appendChild(ul);
+
+    // patient's Testing Table Div
+    var tableDiv = document.createElement("div");
+    tableDiv.className = "collapse"; tableDiv.id = "patient" + order; tableDiv.style = "margin:5px;";
+
+    for (var i = 0; i < 3; i++) {
+        tableDiv.appendChild(TestingCard(null, i));
+    }
+
+    mainDiv.appendChild(button);
+    mainDiv.appendChild(tableDiv);
+
+    return mainDiv;
+}
+
+function TestingListUI() {
     var mainContainer = document.createElement("div");
     mainContainer.className = "border border-primary rounded-3 d-flex flex-column align-items-center";
     mainContainer.style.margin = "30px 20% 30px 20%";
@@ -68,12 +118,11 @@ function TestingListUI() {
     // Append the h2 element to the first nested div
     firstNestedDiv.appendChild(h2Element);
 
-    // Create the second nested div
-    var secondNestedDiv = document.createElement("div");
+    // Create the patient div
+    secondNestedDiv = document.createElement("div");
     secondNestedDiv.style.width = "60%";
-
     for (var i = 0; i < 3; i++) {
-        secondNestedDiv.appendChild(TestingSlotUI(i));
+        secondNestedDiv.appendChild(TestingSlot(null, i));
     }
 
     // Append the first and second nested divs to the main container

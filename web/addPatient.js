@@ -83,7 +83,18 @@ function add_testing(typeTest) {
         divElement.classList.add("input-group", "mb-3");
         divElement.id = id;
 
-        for (var i = 0; i < labels.length; i++) {
+        // Type Group
+        var labelSpan = document.createElement("span");
+        labelSpan.className = "input-group-text"; labelSpan.innerHTML = "Type";
+        var inputElement = document.createElement("input");
+        inputElement.className = "form-control"; inputElement.type = "text"; inputElement.value = labels[0]; inputElement.name = "type";
+        inputElement.readOnly = true;
+
+        divElement.appendChild(labelSpan);
+        divElement.appendChild(inputElement);
+
+        // Input field group
+        for (var i = 1; i < labels.length; i++) {
             var labelSpan = document.createElement("span");
             labelSpan.classList.add("input-group-text");
             labelSpan.textContent = labels[i];
@@ -93,7 +104,7 @@ function add_testing(typeTest) {
             var inputElement = document.createElement("input");
             inputElement.classList.add("form-control");
             inputElement.type = "text";
-            // inputElement.name = labels[i].toLowerCase().replace(/\s+/g, '');
+            inputElement.name = labels[i].toLowerCase().replace(/\s+/g, '');
             divElement.appendChild(inputElement);
         }
 
@@ -229,8 +240,7 @@ function create_MedicationMenu() {
 
 function add_treatment() {
 
-    function remove_treatment(child)
-    {
+    function remove_treatment(child) {
         var treatmentList = document.getElementById('treatmentList');
         treatmentList.removeChild(child);
     }
@@ -260,6 +270,7 @@ function add_treatment() {
         var divElement = document.createElement('div');
         divElement.className = 'border border-warning rounded-3 mb-2';
         divElement.style.margin = '0px 5px';
+        divElement.id = "treatment";
 
         // Create the inner div with the input group
         var innerDivElement = document.createElement('div');
@@ -299,7 +310,7 @@ function add_treatment() {
         removeButton.type = 'button';
         removeButton.className = 'btn btn-outline-danger';
         removeButton.innerText = 'Remove Treatment';
-        removeButton.onclick = function() { remove_treatment(divElement); };
+        removeButton.onclick = function () { remove_treatment(divElement); };
 
         removeButtonDiv.appendChild(removeButton);
 
@@ -337,7 +348,7 @@ function add_medication(medicationList) {
             var input = document.createElement('input');
             input.type = inputType;
             input.className = 'form-control';
-            input.id = inputName;
+            input.name = inputName;
 
             col.appendChild(span);
             col.appendChild(input);
@@ -414,7 +425,7 @@ function add_doctor(doctorList) {
         inputElement.type = 'text';
         inputElement.className = 'form-control';
         inputElement.placeholder = 'Doctor ID';
-        inputElement.id = 'doctorID';
+        inputElement.name = 'doctorID';
 
         // Create button element (Remove button)
         var removeButton = document.createElement('button');
@@ -431,4 +442,163 @@ function add_doctor(doctorList) {
     }
 
     doctorList.appendChild(doctorIDSlot());
+}
+
+// -------------------------------------------------------------------
+
+function gatherPatientInformation() {
+    var id = document.querySelector('input[name="id"]').value;
+    var name = document.querySelector('input[name="name"]').value;
+    var phone = document.querySelector('input[name="phone"]').value;
+    var address = document.querySelector('input[name="address"]').value;
+    var identity_number = document.querySelector('input[name="identity_number"]').value;
+    var gender = document.querySelector('input[name="gender"]:checked').value;
+
+    return { 'id': id, 'name': name, 'phone': phone, 'address': address, 'identity_number': identity_number, 'gender': gender };
+}
+
+function gatherComorbidity() {
+    comorbidityList = [];
+    document.querySelectorAll('#comorbidityList div').forEach(function (element) {
+        var comorbidity = element.querySelector('input[name="comorbidity"]').value;
+        comorbidityList.push(comorbidity);
+    });
+
+    return comorbidityList;
+}
+
+function gatherSymptom() {
+    var symptomList = []
+    document.querySelectorAll('#symptomsList div').forEach(function (element) {
+        var symptom = element.querySelector('input[name="symptoms"]').value;
+        symptomList.push(symptom);
+    });
+
+    return symptomList;
+}
+
+function gatherRoomInformation() {
+    var buildingId = document.querySelector('input[name="buildingID"]').value;
+    var floorID = document.querySelector('input[name="floorID"]').value;
+    var roomID = document.querySelector('input[name="roomID"]').value;
+    var nurseID = document.querySelector('input[name="nurseID"]').value;
+
+    return { 'buildingId': buildingId, 'floorID': floorID, 'roomID': roomID };
+}
+
+function gatherAddmisionInformation() {
+    var staffID = document.querySelector('input[name="staffID"]').value;
+    var admissionDate = document.querySelector('input[name="admissionDate"]').value;
+
+    return { 'staffID': staffID, 'admissionDate': admissionDate };
+}
+
+function gatherTestingInformation() {
+    function getTestInformation(item) {
+        var testingType = item.querySelector('input[name="type"]').value;
+
+        if (testingType === "PCR Test" || testingType === "Quick Test") {
+            var result = item.querySelector('input[name="result"]').value;
+            var ctvalue = item.querySelector('input[name="ctvalue"]').value;
+            return { 'type': testingType, 'result': result, 'ctvalue': ctvalue };
+        }
+        else if (testingType === "SPO2") {
+            var result = item.querySelector('input[name="bloodoxygenlevel"]').value;
+            return { 'type': testingType, 'bloodoxygenlevel': result };
+        }
+        else (testingType === "Respiratory Rate")
+        {
+            var result = item.querySelector('input[name="breath/min"]').value;
+            return { 'type': testingType, 'breathpermin': result }
+        }
+    }
+
+    var testingList = [];
+    document.querySelectorAll('#testingList div').forEach(function (element) {
+        var testingInfo = getTestInformation(element);
+        testingList.push(testingInfo);
+    });
+
+    return testingList;
+}
+
+function gatherTreatmentInformation() {
+    function getTreatmentInformation(item) {
+        var treatmentID = item.querySelector('input[name="treatmentID"]').value;
+        var startDate = item.querySelector('input[name="startDate"]').value;
+        var endDate = item.querySelector('input[name="endDate"]').value;
+
+        var doctorList = [];
+        item.querySelectorAll('#doctorList div').forEach(function (doctor) {
+            doctorList.push(doctor.querySelector('input[name="doctorID"]').value);
+        });
+
+        var medicationList = [];
+        item.querySelectorAll('#medicationList #medication').forEach(function (medication) {
+            var code = medication.querySelector('input[name="medicationCode"]').value;
+            var name = medication.querySelector('input[name="medicationName"]').value;
+            var price = medication.querySelector('input[name="medicationPrice"]').value;
+            var expirationDate = medication.querySelector('input[name="expirationDate"]').value;
+            var effect = medication.querySelector('input[name="medicationEffect"]').value;
+
+            medicationList.push({ code: code, name: name, price: price, expirationDate: expirationDate, effect: effect });
+        });
+
+        return { 'treatmentID': treatmentID, 'startDate': startDate, 'endDate': endDate, 'doctorList': doctorList, 'medicationList': medicationList };
+    }
+
+    var treatmentList = [];
+    document.querySelectorAll('#treatmentList #treatment').forEach(function (element) {
+        treatmentList.push(getTreatmentInformation(element));
+    });
+
+    return treatmentList;
+}
+
+function form_submit() {
+
+    // patient Information
+    var patientInfo = gatherPatientInformation();
+
+    // Retrieve comorbidity
+    var comorbidityList = gatherComorbidity();
+
+    // Retrieve symptoms
+    var symptomList = gatherSymptom();
+
+    // Room information
+    var roomInformation = gatherRoomInformation();
+
+    // Admission information
+    var admissionInfo = gatherAddmisionInformation();
+
+    // Testing information
+    var testingInfo = gatherTestingInformation();
+
+    // Treatment information
+    var treatmentInfo = gatherTreatmentInformation();
+
+    data = {
+        'patientInfo': patientInfo,
+        'comorbidityList': comorbidityList,
+        'symptomList': symptomList,
+        'roomInformation': roomInformation,
+        'admissionInfo': admissionInfo,
+        'testingInfo': testingInfo,
+        'treatmentInfo': treatmentInfo
+    };
+
+    // Use $.ajax method
+    $.ajax({
+        type: 'POST',  // HTTP method for the request
+        url: 'Model/addPatient.php',  // PHP file to which data is sent
+        data: JSON.stringify(data),  // Convert JSON object to a string
+        contentType: 'application/json',  // Set content type to JSON
+        success: function (response) {
+            console.log('Data successfully sent to PHP file. Response:', response);
+        },
+        error: function (error) {
+            console.error('Error sending data to PHP file:', error);
+        }
+    });
 }

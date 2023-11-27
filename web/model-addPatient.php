@@ -171,51 +171,6 @@
 
                 <!-- Treatment Container -->
                 <div id="treatmentList">
-                    <div class="border border-warning rounded-3 mb-2" style="margin: 0px 5px;">
-                        <div class="input-group mt-2">
-                            <div class="row mb-2 w-100" style="margin: 0px 2px;">
-                                <div class="col input-group"><span class="input-group-text">Treatment ID</span><input type="text" class="form-control" name="treatmentID"></div>
-                                <div class="col input-group"><span class="input-group-text">Start date</span><input type="date" class="form-control" name="startDate"></div>
-                                <div class="col input-group"><span class="input-group-text">End date</span><input type="date" class="form-control" name="endDate"></div>
-                            </div>
-                            <div class="w-100">
-                                <ul class="navbar-nav d-flex flex-row" style="margin: 5px 15px;">
-                                    <li class="nav-item">
-                                        <p class="h5" style="margin-right: 5px;">Doctors</p>
-                                    </li>
-                                    <li class="nav-item"><button type="button" class="btn btn-primary">+</button></li>
-                                </ul>
-                                <div id="doctorList" class="container d-flex flex-wrap">
-                                    <div class="input-group" style="width: 25%; margin: 5px;"><input type="text" class="form-control" placeholder="Doctor ID" id="doctorID"><button type="button" class="btn btn-outline-danger">Remove</button></div>
-                                </div>
-                            </div>
-                            <div class="w-100">
-                                <ul class="navbar-nav d-flex flex-row" style="margin: 5px 15px;">
-                                    <li class="nav-item">
-                                        <p class="h5" style="margin-right: 5px;">Medication</p>
-                                    </li>
-                                    <li class="nav-item"><button type="button" class="btn btn-primary">+</button></li>
-                                </ul>
-                                <div id="medicationList" class="container">
-                                    <div id="medication" class="container">
-                                        <div class="row mb-2 w-100">
-                                            <div class="col input-group"><span class="input-group-text">Medication Code</span><input type="text" class="form-control" id="medicationCode"></div>
-                                            <div class="col input-group"><span class="input-group-text">Medication Name</span><input type="text" class="form-control" id="medicationName"></div>
-                                        </div>
-                                        <div class="row mb-2 w-100">
-                                            <div class="col input-group"><span class="input-group-text">Medication Price</span><input type="text" class="form-control" id="medicationPrice"></div>
-                                            <div class="col input-group"><span class="input-group-text">Expiration Date</span><input type="date" class="form-control" id="expirationDate"></div>
-                                        </div>
-                                        <div class="row mb-2 w-100">
-                                            <div class="col input-group"><span class="input-group-text">Effect</span><input type="text" class="form-control" id="medicationEffect"></div>
-                                            <div class="col"><button class="btn btn-outline-danger" type="button">Remove</button></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-2 w-100" style="margin: 0px 15px;"><button type="button" class="btn btn-outline-danger">Remove Treatment</button></div>
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -223,7 +178,7 @@
         </div>
 
         <div class="input-group d-flex justify-content-center mb-3">
-            <button type="submit" class="btn btn-primary" style="width:80%;">Submit</button>
+            <button type="button" class="btn btn-primary" style="width:80%;" onclick="form_submit();">Submit</button>
         </div>
     </form>
 </div>
