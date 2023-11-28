@@ -120,13 +120,13 @@ function add_testing(typeTest) {
 
     var container = document.getElementById("testingList");
     if (typeTest === 'QuickTest')
-        container.appendChild(TestSlot(['Quick Test', 'CT Value', 'Result'], 'quicktest'));
+        container.appendChild(TestSlot(['Quick Test', 'ID', 'CT Value', 'Result'], 'quicktest'));
     else if (typeTest === 'PCRTest')
-        container.appendChild(TestSlot(['PCR Test', 'CT Value', 'Result'], 'pcrtest'));
+        container.appendChild(TestSlot(['PCR Test', 'ID', 'CT Value', 'Result'], 'pcrtest'));
     else if (typeTest === 'RespiratoryRate')
-        container.appendChild(TestSlot(['Respiratory Rate', 'Breath/Min'], 'respiratoryrate'));
+        container.appendChild(TestSlot(['Respiratory Rate', 'ID', 'Breath/Min'], 'respiratoryrate'));
     else if (typeTest === 'SPO2')
-        container.appendChild(TestSlot(['SPO2', 'Blood Oxygen Level'], 'spo2'));
+        container.appendChild(TestSlot(['SPO2', 'ID', 'Blood Oxygen Level'], 'spo2'));
 }
 
 
@@ -500,16 +500,19 @@ function gatherTestingInformation() {
         if (testingType === "PCR Test" || testingType === "Quick Test") {
             var result = item.querySelector('input[name="result"]').value;
             var ctvalue = item.querySelector('input[name="ctvalue"]').value;
-            return { 'type': testingType, 'result': result, 'ctvalue': ctvalue };
+            var testID = item.querySelector('input[name="id"]').value;
+            return { 'type': testingType, 'testID': testID, 'result': result, 'ctvalue': ctvalue };
         }
         else if (testingType === "SPO2") {
             var result = item.querySelector('input[name="bloodoxygenlevel"]').value;
-            return { 'type': testingType, 'bloodoxygenlevel': result };
+            var testID = item.querySelector('input[name="id"]').value;
+            return { 'type': testingType, 'testID': testID, 'bloodoxygenlevel': result };
         }
         else (testingType === "Respiratory Rate")
         {
             var result = item.querySelector('input[name="breath/min"]').value;
-            return { 'type': testingType, 'breathpermin': result }
+            var testID = item.querySelector('input[name="id"]').value;
+            return { 'type': testingType, 'testID': testID, 'breathpermin': result }
         }
     }
 
@@ -589,6 +592,8 @@ function form_submit() {
     };
 
     // Use $.ajax method
+    console.log(JSON.stringify(data));
+
     $.ajax({
         type: 'POST',  // HTTP method for the request
         url: 'Model/addPatient.php',  // PHP file to which data is sent
