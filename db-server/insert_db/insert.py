@@ -69,7 +69,7 @@ def main():
         ("PEOPLE", "A2:D6", "template_people.sql"),
         ("ROOM", "A2:E6", "template_room.sql"),
         ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql"),
-        ("TREATMENT", "A2:D6", "template_treatm ent.sql"),
+        ("TREATMENT", "A2:D6", "template_treatment.sql"),
         ("PERFORM", "A2:C6", "template_perform.sql")
     ]
 

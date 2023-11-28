@@ -49,4 +49,3 @@ function retrievePatientInformation(name) {
         })
         .catch(error => console.error('Error:', error));
 }
-

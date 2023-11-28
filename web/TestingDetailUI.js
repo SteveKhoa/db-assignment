@@ -1,3 +1,18 @@
+// Adapter:
+function Adapter(testingInfo, patientName) {
+    if (testingInfo['type'] === 'quickTest') {
+        return { 'type': 'Quick Test', 'value': { 'Patient Name': patientName, 'Result': testingInfo['result'], 'CT Value': testingInfo['ctValue'] } };
+    }
+    else if (testingInfo['type'] === 'respiratoryRate') {
+        return { 'type': 'Respiratory Rate', 'value': { 'Patient Name': patientName, 'Breath/Min': testingInfo['breathpermin'] } };
+    }
+    else if (testingInfo['type'] === 'SPO2') {
+        return { 'type': 'SPO2', 'value': { 'Patient Name': patientName, 'Blood Oxygen Level': testingInfo['oxylevel'] } };
+    }
+    else if (testingInfo['type'] === 'pcrTest') {
+        return { 'type': 'PCR Test', 'value': { 'Patient Name': patientName, 'Result': testingInfo['result'], 'CT Value': testingInfo['ctValue'] } };
+    }
+}
 
 // This will generate the slot for each patients with the specific name
 function TestingSlot(patientInfo, order) {
@@ -16,15 +31,14 @@ function TestingSlot(patientInfo, order) {
         var linkElement = document.createElement("a");
         linkElement.className = "btn";
         linkElement.setAttribute("data-bs-toggle", "collapse");
-        linkElement.href = "#collapse" + order;
-        linkElement.textContent = "Quick Test";
+        linkElement.href = "#collapse" + patientInfo['patientID'] + order;
 
         // Append the link to the card header
         cardHeader.appendChild(linkElement);
 
         // Create the card Collapse
         var cardCollapse = document.createElement("div");
-        cardCollapse.id = "collapse" + order;
+        cardCollapse.id = "collapse" + patientInfo['patientID'] + order;
         cardCollapse.className = "collapse";
         cardCollapse.setAttribute("data-bs-parent", "#accordion");
 
@@ -35,19 +49,15 @@ function TestingSlot(patientInfo, order) {
         // Append card body into card Collapse
         cardCollapse.appendChild(cardBody);
 
-        // Create paragraphs within the card body (Fix into FOR LOOP)
-        var resultParagraph = document.createElement("p");
-        resultParagraph.textContent = "Result: Positive";
+        // Append Item Data into Each Field
+        var standardItem = Adapter(testInfo, patientInfo['name']);
+        linkElement.textContent = standardItem['type'];     // TODO: NEED CHANGE
 
-        var ctValueParagraph = document.createElement("p");
-        ctValueParagraph.textContent = "CT Value: 10";
-
-        var patientInfo = document.createElement("p");
-        patientInfo.textContent = "Patient: Patient 1";
-
-        cardBody.appendChild(patientInfo);
-        cardBody.appendChild(resultParagraph);
-        cardBody.appendChild(ctValueParagraph);
+        for (const key in standardItem['value']) {
+            var cardContent = document.createElement("p");
+            cardContent.textContent = key + ": " + standardItem['value'][key];
+            cardBody.appendChild(cardContent);
+        }
 
         // Append card header and card body to the main container
         mainContainer.appendChild(cardHeader);
@@ -72,11 +82,13 @@ function TestingSlot(patientInfo, order) {
 
     // Create li elements
     var li1 = document.createElement("li"); li1.classList.add("nav-item");
-    var span1 = document.createElement("span"); span1.classList.add("label", "label-primary", "h5"); span1.textContent = "Nguyen Van A";
+    var span1 = document.createElement("span"); span1.classList.add("label", "label-primary", "h5");
+    span1.textContent = "Name: " + patientInfo['name'];
     li1.appendChild(span1);
 
     var li2 = document.createElement("li"); li2.classList.add("nav-item", "ms-auto");
-    var span2 = document.createElement("span"); span2.classList.add("label", "label-primary", "h5"); span2.textContent = "ID: 1";
+    var span2 = document.createElement("span"); span2.classList.add("label", "label-primary", "h5");
+    span2.textContent = "ID: " + patientInfo['patientID'];
     li2.appendChild(span2);
 
     // Append li elements to ul
@@ -90,8 +102,9 @@ function TestingSlot(patientInfo, order) {
     var tableDiv = document.createElement("div");
     tableDiv.className = "collapse"; tableDiv.id = "patient" + order; tableDiv.style = "margin:5px;";
 
-    for (var i = 0; i < 3; i++) {
-        tableDiv.appendChild(TestingCard(null, i));
+    for (var i = 0; i < patientInfo['Testing'].length; i++) {
+        var testingCardUI = TestingCard(patientInfo['Testing'][i], i);
+        tableDiv.appendChild(testingCardUI);
     }
 
     mainDiv.appendChild(button);
@@ -100,7 +113,7 @@ function TestingSlot(patientInfo, order) {
     return mainDiv;
 }
 
-function TestingListUI() {
+function TestingListUI(itemList) {
     var mainContainer = document.createElement("div");
     mainContainer.className = "border border-primary rounded-3 d-flex flex-column align-items-center";
     mainContainer.style.margin = "30px 20% 30px 20%";
@@ -121,8 +134,8 @@ function TestingListUI() {
     // Create the patient div
     secondNestedDiv = document.createElement("div");
     secondNestedDiv.style.width = "60%";
-    for (var i = 0; i < 3; i++) {
-        secondNestedDiv.appendChild(TestingSlot(null, i));
+    for (var i = 0; i < itemList.length; i++) {
+        secondNestedDiv.appendChild(TestingSlot(itemList[i], i));
     }
 
     // Append the first and second nested divs to the main container
@@ -147,9 +160,25 @@ function TestsearchBarUI() {
     inputElement.name = "name";
     inputElement.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
-            var content = document.getElementById("content");
-            content.innerHTML = "";
-            content.appendChild(TestingListUI());
+
+            retrievePatientTesting(this.value).then(json_data => {
+                //     var new_json_data = [{
+                //         "name": "Le Thu Thuy", "patientID": 100001, "Testing": [
+                //             { "type": "respiratoryRate", "breathpermin": 31 },
+                //             { "type": "SPO2", "oxylevel": 12 }
+                //         ]
+                //     },
+                //     { 'name': 'Le Trung Trinh', 'patientID': 100002, "Testing": [
+                //         {'type': 'quickTest', 'ctValue': 14, 'result': 'positive'}
+                //     ]}
+                // ];
+
+                var testingUI = TestingListUI(json_data);
+
+                var content = document.getElementById("content");
+                content.innerHTML = "";
+                content.appendChild(testingUI);
+            });
         }
     });
 
@@ -163,4 +192,20 @@ function TestsearchBarUI() {
     mainContainer.appendChild(labelElement);
 
     return mainContainer;
+}
+
+function retrievePatientTesting(name) {
+    return fetch('./Model/TestingDetail.php',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'name=' + encodeURIComponent(name),
+        })
+        .then(response => response.json())
+        .then(data => {
+            return data;
+        })
+        .catch(error => console.error('Error:', error));
 }
