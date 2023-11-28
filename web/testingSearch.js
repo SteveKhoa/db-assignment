@@ -1,6 +1,3 @@
-// This file actually take from searchUI.js file 
-// the function patientInformationUI() I give it to 
-//patientInformation.php file to echo result eazier
 
 function searchBarUI() {
     var mainContainer = document.createElement("div");
@@ -19,6 +16,7 @@ function searchBarUI() {
         if (event.key === "Enter") {
             // Call the PHP file to retrieve patient information
             retrievePatientInformation(inputElement.value);
+
         }
     });
 
@@ -44,8 +42,12 @@ function retrievePatientInformation(name) {
     })
         .then(response => response.text())
         .then(data => {
+            // the console.log is not easy to read so i format it to be easy to read
             // Display the result in the content area
-            document.getElementById("content").innerHTML = data;
+            const jsonData = JSON.parse(data);
+
+            // Display the result in the content area
+            console.log(JSON.stringify(jsonData, null, 2));
         })
         .catch(error => console.error('Error:', error));
 }
