@@ -33,7 +33,7 @@ function searchBarUI() {
 }
 
 function retrievePatientInformation(name) {
-    fetch('./Model/patientInformation.php', {
+    fetch('./Model/reportInfo.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
