@@ -38,14 +38,14 @@ function createPatientSlot(patientInfo, order) {
     li1.classList.add("nav-item");
     var span1 = document.createElement("span");
     span1.classList.add("label", "label-primary", "h5");
-    span1.textContent = "Patient: Nguyen Van A";
+    span1.textContent = "Patient: " + patientInfo['name'];
     li1.appendChild(span1);
 
     var li2 = document.createElement("li");
     li2.classList.add("nav-item", "ms-auto");
     var span2 = document.createElement("span");
     span2.classList.add("label", "label-primary", "h5");
-    span2.textContent = "ID: 1";
+    span2.textContent = "ID: " + patientInfo['patientID'];
     li2.appendChild(span2);
 
     // Append li elements to ul
@@ -65,9 +65,9 @@ function createPatientSlot(patientInfo, order) {
     patientInfoDiv.style.margin = "5px";
 
     // Create card elements for patient information (If want to create more information => Add to here).
-    var card1 = createCard("Name", "Name");
-    var card2 = createCard("Phone number", "111222333");
-    var card3 = createCard("Comorbidity", "Cold, Headache");
+    var card1 = createCard("Name", patientInfo['name']);
+    var card2 = createCard("Phone number", patientInfo['patientPhone']);
+    var card3 = createCard("Comorbidity", patientInfo['patientComorbidities'].join(' '));
 
     // Append card elements to patientInfoDiv
     patientInfoDiv.appendChild(card1);
@@ -81,7 +81,6 @@ function createPatientSlot(patientInfo, order) {
 }
 
 function patientInformationUI(itemList) {
-
     // Create Topic Div
     var mainContainer = document.createElement("div");
     mainContainer.className = "border border-3 border-warning rounded-3 d-flex flex-column align-items-center";
@@ -95,9 +94,10 @@ function patientInformationUI(itemList) {
     patientInfoDiv.innerHTML = "<h2>Patient Information</h2>";
     mainContainer.appendChild(patientInfoDiv);
 
-    // Create the card divs dynamically
-    for (var i = 0; i < 4; i++) {
-        mainContainer.appendChild(createPatientSlot(null, i));
+    for (var i = 0; i < itemList.length; i++)
+    {
+        var itemUI = createPatientSlot(itemList[i], i);
+        mainContainer.appendChild(itemUI);
     }
 
     return mainContainer;
@@ -118,9 +118,14 @@ function searchBarUI() {
     inputElement.name = "name";
     inputElement.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
-            var content = document.getElementById("content");
-            content.innerHTML = "";
-            content.appendChild(patientInformationUI());
+            retrievePatientData(this.value).then(text_data => {
+                var json_data = JSON.parse(text_data);
+                var ui_node = patientInformationUI(json_data);
+
+                var content = document.getElementById("content");
+                content.innerHTML = "";
+                content.appendChild(ui_node);
+            });
         }
     });
 
@@ -134,4 +139,19 @@ function searchBarUI() {
     mainContainer.appendChild(labelElement);
 
     return mainContainer;
+}
+
+function retrievePatientData(name) {
+    return fetch('./Model/patientInformation.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'name=' + encodeURIComponent(name),
+    })
+        .then(response => response.text())
+        .then(data => {
+            return data;
+        })
+        .catch(error => console.error('Error:', error));
 }

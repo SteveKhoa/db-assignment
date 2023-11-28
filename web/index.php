@@ -4,8 +4,8 @@ include "head.php";
 
 <script src="./main.js"></script>
 <script>
-    $.getScript("testingSearch.js"); //using this temporary file for searching
-    //$.getScript("searchUI.js");
+    // $.getScript("testingSearch.js"); //using this temporary file for searching
+    $.getScript("searchUI.js");
     $.getScript("TestingDetailUI.js");
     $.getScript("ReportingUI.js");
     $.getScript("addPatient.js");
