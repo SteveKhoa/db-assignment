@@ -483,7 +483,7 @@ function gatherRoomInformation() {
     var roomID = document.querySelector('input[name="roomID"]').value;
     var nurseID = document.querySelector('input[name="nurseID"]').value;
 
-    return { 'buildingId': buildingId, 'floorID': floorID, 'roomID': roomID };
+    return { 'buildingId': buildingId, 'floorID': floorID, 'roomID': roomID , 'nurseID' :nurseID};
 }
 
 function gatherAddmisionInformation() {
