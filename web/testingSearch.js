@@ -43,11 +43,9 @@ function retrievePatientInformation(name) {
         .then(response => response.text())
         .then(data => {
             // the console.log is not easy to read so i format it to be easy to read
-            // Display the result in the content area
-            const jsonData = JSON.parse(data);
 
-            // Display the result in the content area
-            console.log(JSON.stringify(jsonData, null, 2));
+            console.log(data);
+            
         })
         .catch(error => console.error('Error:', error));
 }

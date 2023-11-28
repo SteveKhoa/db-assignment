@@ -46,7 +46,7 @@ function retrieveDatabase($name)
 
     $conn->close();
 
-    echo json_encode($patients);
+    echo json_encode($patients, JSON_PRETTY_PRINT);
 }
 
 if (isset($_POST['name'])) {
