@@ -8,7 +8,7 @@ include_once('head.php');
             <div class="col-md-6 col-xl-4 p-5 card forms d-flex flex-column justify-content-center align-items-cente">
                 <h2 class="text-center mb-4">Log In</h2>
                 <div class="alert alert-danger" style="display: none;"></div>
-                <form action="/Pages/login/login_processing.php" class="d-flex flex-column justify-content-center align-items-center needs-validation" method="POST" novalidate>
+                <form action="Model/loginProcessing.php" class="d-flex flex-column justify-content-center align-items-center needs-validation" method="POST" novalidate>
                     <div class="form-group mb-3 w-75">
                         <label for="username" class="form-lable">Username</label>
                         <input type="username" class="form-control

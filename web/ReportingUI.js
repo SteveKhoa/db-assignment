@@ -20,12 +20,54 @@ function patientInfoUI(patientInfo) {
     divElement.className = "border border-3 border-gray rounded-3";
     divElement.style.width = "80%";
 
-    fetch("Test/model-patientInfo.php")
-        .then(response => response.text())
-        .then(htmlContent => {
-            divElement.innerHTML += htmlContent;
-        });
+    var patientContent = `
+    <div class="row d-flex justify-content-center mt-2 mb-2" style="height:50px;">
+        <div class="col-md-5 d-flex align-items-center h-100">
+            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
+                <span class="input-group-text h-100 d-flex align-items-center justify-content-center">Fullname</span>
+                <p class="form-control h-100 d-flex align-items-center justify-content-center" style="overflow-y:auto;">${patientInfo['Name']}</p>
+            </div>
+        </div>
+        <div class="col-md-5 d-flex align-items-center h-100">
+            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
+                <span class="input-group-text h-100 d-flex align-items-center justify-content-center">Patient ID</span>
+                <p class="form-control h-100 d-flex align-items-center justify-content-center" style="overflow-y:auto;">${patientInfo['PatientID']}</p>
+            </div>
+        </div>
+    </div>
 
+    <div class="row d-flex justify-content-center mt-2 mb-2" style="height:50px;">
+        <div class="col-md-5 d-flex align-items-center h-100">
+            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
+                <span class="input-group-text h-100 d-flex align-items-center justify-content-center">Address</span>
+                <p class="form-control h-100 text-center align-items-center" style="overflow-y:auto;">${patientInfo['Address']}</p>
+            </div>
+        </div>
+
+        <div class="col-md-5 d-flex align-items-center h-100">
+            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
+                <span class="input-group-text h-100 d-flex align-items-center justify-content-center">Phone number</span>
+                <p class="form-control h-100 d-flex align-items-center justify-content-center" style="overflow-y:auto;">${patientInfo['patientPhone']}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-2 mb-2" style="height:50px;">
+        <div class="col-md-5 d-flex align-items-center h-100">
+            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
+                <span class="input-group-text d-flex justify-content-center h-100">Gender</span>
+                <p class="form-control h-100 d-flex align-items-center justify-content-center">${patientInfo['Gender'] === 'M' ? 'Male' : 'Female'}</p>
+            </div>
+        </div>
+        <div class="col-md-5 d-flex align-items-center h-100">
+            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
+                <span class="input-group-text d-flex justify-content-center h-100">Comordities</span>
+                <p class="form-control h-100 text-center align-items-center" style="overflow-y:auto;">${patientInfo['Comorbidity'].join(', ')}</p>
+            </div>
+        </div>
+    </div>`;
+
+    divElement.innerHTML += patientContent;
     return divElement;
 }
 
@@ -35,10 +77,10 @@ function tableSymptomUI(SymptomList, order) {
         var row = document.createElement("tr");
 
         var col1 = document.createElement("td");
-        col1.innerHTML = "Headache";
+        col1.innerHTML = SymptomInfo['type'];
 
         var col2 = document.createElement("td");
-        col2.innerHTML = "23-11-2023";
+        col2.innerHTML = SymptomInfo['date'];
 
         row.appendChild(col1);
         row.appendChild(col2);
@@ -69,8 +111,8 @@ function tableSymptomUI(SymptomList, order) {
         // Create the table body (tbody)
         var tbodyElement = document.createElement("tbody");
 
-        for (var i = 0; i < 2; i++) {
-            tbodyElement.appendChild(SymptomRow());
+        for (var i = 0; i < SymptomList.length; i++) {
+            tbodyElement.appendChild(SymptomRow(SymptomList[i]));
         }
 
         tableElement.appendChild(theadElement);
@@ -189,14 +231,34 @@ function tableSymptomUI(SymptomList, order) {
 //     return [div1, div2];
 // }
 
+// Adapter: use for standardize the test structure
+function Adapter(testingInfo) {
+    if (testingInfo['type'] === 'quickTest') {
+        return { 'type': 'Quick Test', 'testDate': testingInfo['testDate'] };
+    }
+    else if (testingInfo['type'] === 'respiratoryRate') {
+        return { 'type': 'Respiratory Rate', 'testDate': testingInfo['testDate']  };
+    }
+    else if (testingInfo['type'] === 'SPO2') {
+        return { 'type': 'SPO2', 'testDate': testingInfo['testDate']  };
+    }
+    else if (testingInfo['type'] === 'pcrTest') {
+        return { 'type': 'PCR Test', 'testDate': testingInfo['testDate']  };
+    }
+}
+
 function listTestingUI(testingList, order) {
     function TestRow(testingInfo) {
         var row = document.createElement("tr");
 
         var col1 = document.createElement("td");
-        col1.innerHTML = "SPO2";
+        col1.innerHTML = testingInfo['type'];
+
+        var col2 = document.createElement("td");
+        col2.innerHTML = testingInfo['testDate'];
 
         row.appendChild(col1);
+        row.appendChild(col2);
 
         return row;
     }
@@ -214,15 +276,20 @@ function listTestingUI(testingList, order) {
         thSymptom.textContent = "Test";
         headerRow.appendChild(thSymptom);
 
+        var thSymptom = document.createElement("th");
+        thSymptom.textContent = "Date";
+        headerRow.appendChild(thSymptom);
+
         // Append the header row to the thead
         theadElement.appendChild(headerRow);
 
         // Create the table body (tbody)
         var tbodyElement = document.createElement("tbody");
 
-        for (var i = 0; i < 2; i++) {
-            tbodyElement.appendChild(TestRow());
-        }
+        testingList.forEach(item => {
+            var standardTest = Adapter(item);
+            tbodyElement.appendChild(TestRow(standardTest));
+        });
 
         tableElement.appendChild(theadElement);
         tableElement.appendChild(tbodyElement);
@@ -258,7 +325,74 @@ function listTestingUI(testingList, order) {
     return [div1, div2];
 }
 
-function listTreatmentUI(treatmentList, order) {
+function listTreatmentUI(treatmentList, firstIndex) {
+
+    // Create MEDICATION INFORMATION (Start date, End date, and Doctor)
+    function createMedicationInfo(treatmentItem, secondIndex) {
+
+        // Create MEDICATION (medication name, code, price, effect, ...)
+        function createMedicationUI(medicationItem, thirdIndex) {
+            return `
+            <div class="btn border border-primary" style="width:100%; margin-bottom:10px;">
+                <a class="btn" href="#medication_first${firstIndex}_second${secondIndex}_third${thirdIndex}" data-bs-toggle="collapse" style="width:100%;">Medication ${thirdIndex}</a>
+                <div id="medication_first${firstIndex}_second${secondIndex}_third${thirdIndex}" class="collapse">
+                    <div class="row d-flex justify-content-center mt-1">
+                        <div class="col-md">
+                            <div class="input-group d-flex align-items-baseline">
+                                <span class="input-group-text">Name</span>
+                                <p class="form-control">${medicationItem['name']}</p>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="input-group d-flex align-items-baseline">
+                                <span class="input-group-text">Expiration date</span>
+                                <p class="form-control">${medicationItem['expireDate']}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex justify-content-center mt-1">
+                        <div class="col-md">
+                            <div class="input-group d-flex align-items-baseline">
+                                <span class="input-group-text">Price</span>
+                                <p class="form-control">${medicationItem['price']}</p>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="input-group d-flex align-items-baseline">
+                                <span class="input-group-text">Effect</span>
+                                <p class="form-control">${medicationItem['effect']}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        var treatmentSlotUI = `
+        <div class="card mb-3" style="width:100%">
+            <div class="card-body">
+                <div class="input-group d-flex align-items-baseline">
+                    <span class="input-group-text">Start date</span>
+                    <p class="form-control">${treatmentItem['startDate']}</p>
+                </div>
+                <div class="input-group d-flex align-items-baseline">
+                    <span class="input-group-text">End date</span>
+                    <p class="form-control">${treatmentItem['endDate']}</p>
+                </div>
+                <div class="input-group d-flex align-items-baseline">
+                    <span class="input-group-text">Doctor</span>
+                    <p class="form-control">${treatmentItem['doctor'].join(', ')}</p>
+                </div>`
+
+        treatmentItem['medication'].forEach((element, index) => {
+            treatmentSlotUI += createMedicationUI(element, index + 1);
+        })
+        treatmentSlotUI += '</div></div>';
+
+        return treatmentSlotUI;
+    }
+
     var div1 = document.createElement("div");
     div1.style.margin = "10px 0 10px 0";
 
@@ -266,54 +400,54 @@ function listTreatmentUI(treatmentList, order) {
     var anchorElement = document.createElement("a");
     anchorElement.className = "btn btn-outline-primary text-start d-flex align-items-center collapsed";
     anchorElement.style.height = "30px"; anchorElement.style.width = "200px";
-    anchorElement.href = "#listTreatment" + order;
+    anchorElement.href = "#listTreatment" + firstIndex;
     anchorElement.setAttribute("data-bs-toggle", "collapse");
-    anchorElement.textContent = "List of Treatment";
+    anchorElement.textContent = "List of Treatments";
 
     // Append the anchor element to the first div
     div1.appendChild(anchorElement);
 
     // Create the second div
     var div2 = document.createElement("div");
-    div2.id = "listTreatment" + order;
+    div2.id = "listTreatment" + firstIndex;
     div2.className = "collapse";
 
-    const centerDiv = document.createElement("div");
-    centerDiv.className = "d-flex flex-column align-items-center";
-    div2.appendChild(centerDiv);
+    treatmentList.forEach((treatmentItem, index) => {
+        const centerDiv = document.createElement("div");
+        centerDiv.className = "d-flex flex-column align-items-center";
+        centerDiv.innerHTML += createMedicationInfo(treatmentItem, index + 1);
 
+        div2.appendChild(centerDiv);
+    });
 
-    fetch("Test/model-listTreatment.php")
-        .then(response => response.text())
-        .then(htmlContent => {
-            centerDiv.innerHTML += htmlContent;
-        });
 
     return [div1, div2];
 }
 
 function reportUI(patientList) {
+
+    // Create each patient report UI
     function createReportPatient(patient, order) {
         var patientDiv = document.createElement("div");
         patientDiv.className = "d-flex flex-column align-items-center w-100";
 
-        var patientInformation = patientInfoUI(patient);
-        var symptomComponents = tableSymptomUI(patient, order);
-        var testingDetailComponent = listTestingUI(patient, order);
-        var treatmentComponent = listTreatmentUI(patient, order);
-
         var listArea = document.createElement("div");
         listArea.style.width = "80%";
-        border.appendChild(listArea);
 
+        var patientInformation = patientInfoUI(patient);
+        var symptomComponents = tableSymptomUI(patient['Symptom'], order);
         listArea.appendChild(symptomComponents[0]);
         listArea.appendChild(symptomComponents[1]);
 
+        var testingDetailComponent = listTestingUI(patient['Testing'], order);
         listArea.appendChild(testingDetailComponent[0]);
         listArea.appendChild(testingDetailComponent[1]);
 
+        var treatmentComponent = listTreatmentUI(patient['Treatment'], order);
         listArea.appendChild(treatmentComponent[0]);
         listArea.appendChild(treatmentComponent[1]);
+
+        border.appendChild(listArea);
 
         patientDiv.appendChild(patientInformation);
         patientDiv.appendChild(listArea);
@@ -336,11 +470,11 @@ function reportUI(patientList) {
     var carouselInnerDiv = document.createElement("div");
     carouselInnerDiv.className = "carousel-inner w-100";
 
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < patientList.length; i++) {
         // Create the first carousel item (active)
         var CarouselItemDiv = document.createElement("div");
         CarouselItemDiv.className = "carousel-item" + (i === 0 ? " active" : "");
-        CarouselItemDiv.appendChild(createReportPatient(null, i)); // TODO: CHANGE WHEN HAVE DATA
+        CarouselItemDiv.appendChild(createReportPatient(patientList[i], i)); // TODO: CHANGE WHEN HAVE DATA
 
         carouselInnerDiv.appendChild(CarouselItemDiv);
     }
@@ -368,7 +502,7 @@ function ReportslideBarUI(ItemList) {
 
         var img = document.createElement("img");
         img.className = "navbar-brand rounded-3";
-        img.src = "Test/img_avatar3.png";
+        img.src = "Image/img_avatar3.png";
         img.alt = "HCMUT logo";
         img.width = "50";
         img.height = "50";
@@ -377,7 +511,7 @@ function ReportslideBarUI(ItemList) {
 
         var h2 = document.createElement("h2");
         h2.className = "col d-flex justify-content-center";
-        h2.textContent = "Nguyen Van A";       // TODO: CHANGE WHEN HAVE INFORMATION
+        h2.textContent = Item['Name'];       // TODO: CHANGE WHEN HAVE INFORMATION
 
         contentDiv.appendChild(img);
         contentDiv.appendChild(h2);
@@ -409,7 +543,7 @@ function ReportslideBarUI(ItemList) {
 
     // Create the previous icon span
     var prevIcon = document.createElement("span");
-    prevIcon.className = "carousel-control-prev-icon";
+    prevIcon.className = "carousel-control-prev-icon bg-warning rounded-3";
     prevButton.appendChild(prevIcon);
 
     // Create the next button
@@ -422,7 +556,7 @@ function ReportslideBarUI(ItemList) {
 
     // Create the next icon span
     var nextIcon = document.createElement("span");
-    nextIcon.className = "carousel-control-next-icon";
+    nextIcon.className = "carousel-control-next-icon bg-warning rounded-3";
     nextButton.appendChild(nextIcon);
 
     // Create the carousel container div
@@ -435,10 +569,8 @@ function ReportslideBarUI(ItemList) {
     carouselInnerDiv.className = "carousel-inner h-100";
 
     // Create carousel items
-    var names = ["Nguyen Van A", "Nguyen Van B", "Nguyen Van C"];
-
-    for (var i = 0; i < names.length; i++) {
-        var itemUI = infoArea(null, i);
+    for (var i = 0; i < ItemList.length; i++) {
+        var itemUI = infoArea(ItemList[i], i);
         carouselInnerDiv.appendChild(itemUI);
     }
 
@@ -470,14 +602,21 @@ function ReportsearchBarUI() {
     inputElement.name = "name";
     inputElement.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
-            var content = document.getElementById("content");
-            content.innerHTML = "";
-            content.append(reportUI(null, content));
 
-            var slidingBar = document.getElementById("carousel_info");
-            if (slidingBar !== null) { mainContainer.removeChild(slidingBar); }
+            retrievePatientReport(this.value).then(json_data => {
+                
+                var slidingBar = document.getElementById("carousel_info");
+                if (slidingBar !== null) { mainContainer.removeChild(slidingBar); }
 
-            mainContainer.appendChild(ReportslideBarUI());
+                var slidingBarUI = ReportslideBarUI(json_data);
+                var reportContentUI = reportUI(json_data);
+
+                var content = document.getElementById("content");
+                content.innerHTML = "";
+                content.appendChild(reportContentUI);
+
+                mainContainer.appendChild(slidingBarUI);
+            });
         }
     });
 
@@ -494,4 +633,19 @@ function ReportsearchBarUI() {
     mainContainer.append(colDiv);
 
     return mainContainer;
+}
+
+function retrievePatientReport(name) {
+    return fetch('./Model/reportInfo.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'name=' + encodeURIComponent(name),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data;
+        })
+        .catch(error => console.error('Error:', error));
 }

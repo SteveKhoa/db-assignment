@@ -28,6 +28,7 @@ function retrievePatientData($name)
                 'PatientID' => $row['Patient_PatientID'],
                 'Gender' => $row['Patient_Gender'],
                 'Address' => $row['Patient_Address'],
+                'patientPhone' => $row['Patient_Phone'],
                 'Comorbidity' => array(),
                 'Symptom' => array(),
                 'Testing' => array(),
@@ -48,7 +49,10 @@ function retrievePatientData($name)
             $SymptomResult = $conn->query($SymptomQuery);
 
             while ($SymptomRow = $SymptomResult->fetch_assoc()) {
-                $patient['Symptom'][] = $SymptomRow['Symptoms_Symptoms'];
+                $patient['Symptom'][] = array(
+                    'type' => $SymptomRow['Symptoms_Symptoms'],
+                    'date' => $SymptomRow['Symptoms_Time']
+                );
             }
             // Retrieve testing information for this patient
             $testingQuery = "SELECT * FROM Testing WHERE Testing_PatientID = '{$row['Patient_PatientID']}'";

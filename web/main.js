@@ -57,3 +57,8 @@ function ReportBtnClickOn() {
 
     searchArea.appendChild(ReportsearchBarUI());
 }
+
+function LogoutBtnClickOn()
+{
+    fetch("Model/logoutProcessing.php");
+}

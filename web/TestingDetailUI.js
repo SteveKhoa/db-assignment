@@ -10,7 +10,7 @@ function Adapter(testingInfo, patientName) {
         return { 'type': 'SPO2', 'value': { 'Patient Name': patientName, 'Blood Oxygen Level': testingInfo['oxylevel'] } };
     }
     else if (testingInfo['type'] === 'pcrTest') {
-        return { 'type': 'PCR Test', 'value': { 'Patient Name': patientName, 'Result': testingInfo['result'], 'CT Value': testingInfo['ctValue'] } };
+        return { 'type': 'PCR Test', 'value': { 'Patient Name': patientName, 'Date': testingInfo['testDate'], 'Result': testingInfo['result'], 'CT Value': testingInfo['ctValue'] } };
     }
 }
 

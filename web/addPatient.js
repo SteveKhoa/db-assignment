@@ -10,7 +10,6 @@ function add_comorbidity() {
     function comorbiditySlot() {
         var items = document.createElement("div");
         items.className = 'col input-group mb-3';
-        // item.setAttribute("id", "comorbidity" + num_comorbidity);
 
         var comor_span = document.createElement("span");
         comor_span.className = "input-group-text";
@@ -47,22 +46,34 @@ function add_symptom() {
         var items = document.createElement("div");
         items.className = 'col input-group mb-3';
 
-        var comor_span = document.createElement("span");
-        comor_span.className = "input-group-text";
-        comor_span.innerHTML = "Symptom";
+        var symptom_span = document.createElement("span");
+        symptom_span.className = "input-group-text";
+        symptom_span.innerHTML = "Symptom";
 
-        var inputfield = document.createElement("input");
-        inputfield.className = "form-control";
-        inputfield.type = "text";
-        inputfield.name = "symptoms";
+        var symptom_inputField = document.createElement("input");
+        symptom_inputField.className = "form-control";
+        symptom_inputField.type = "text";
+        symptom_inputField.name = "symptoms";
+
+        var date_span = document.createElement("span");
+        date_span.className = "input-group-text";
+        date_span.innerHTML = "Date";
+
+        var date_inputField = document.createElement("input");
+        date_inputField.className = "form-control";
+        date_inputField.type = "date";
+        date_inputField.name = "symptomsDate";
 
         var remove_btn = document.createElement("span");
         remove_btn.className = "input-group-text btn btn-outline-danger";
         remove_btn.onclick = function () { remove_symptom(items); }
         remove_btn.innerHTML = "Remove";
 
-        items.appendChild(comor_span);
-        items.appendChild(inputfield);
+        items.appendChild(symptom_span);
+        items.appendChild(symptom_inputField);
+        items.appendChild(date_span);
+        items.appendChild(date_inputField);
+
         items.appendChild(remove_btn);
 
         return items;
@@ -84,13 +95,9 @@ function add_testing(typeTest) {
         divElement.id = id;
 
         // Type Group
-        var labelSpan = document.createElement("span");
-        labelSpan.className = "input-group-text"; labelSpan.innerHTML = "Type";
         var inputElement = document.createElement("input");
         inputElement.className = "form-control"; inputElement.type = "text"; inputElement.value = labels[0]; inputElement.name = "type";
         inputElement.readOnly = true;
-
-        divElement.appendChild(labelSpan);
         divElement.appendChild(inputElement);
 
         // Input field group
@@ -107,6 +114,18 @@ function add_testing(typeTest) {
             inputElement.name = labels[i].toLowerCase().replace(/\s+/g, '');
             divElement.appendChild(inputElement);
         }
+
+        // Input Test Date:
+        var labelSpan = document.createElement("span");
+        labelSpan.classList.add("input-group-text");
+        labelSpan.textContent = "Date";
+        divElement.appendChild(labelSpan);
+
+        var inputElement = document.createElement("input");
+        inputElement.classList.add("form-control");
+        inputElement.type = "date";
+        inputElement.name = "testDate";
+        divElement.appendChild(inputElement);
 
         // Create span element for Remove button
         var removeButton = document.createElement("span");
@@ -471,7 +490,8 @@ function gatherSymptom() {
     var symptomList = []
     document.querySelectorAll('#symptomsList div').forEach(function (element) {
         var symptom = element.querySelector('input[name="symptoms"]').value;
-        symptomList.push(symptom);
+        var symptomDate = element.querySelector('input[name="symptomsDate"]').value;
+        symptomList.push({ 'symptom': symptom, 'date': symptomDate });
     });
 
     return symptomList;
@@ -483,7 +503,7 @@ function gatherRoomInformation() {
     var roomID = document.querySelector('input[name="roomID"]').value;
     var nurseID = document.querySelector('input[name="nurseID"]').value;
 
-    return { 'buildingId': buildingId, 'floorID': floorID, 'roomID': roomID , 'nurseID' :nurseID};
+    return { 'buildingId': buildingId, 'floorID': floorID, 'roomID': roomID, 'nurseID': nurseID };
 }
 
 function gatherAddmisionInformation() {
@@ -496,23 +516,24 @@ function gatherAddmisionInformation() {
 function gatherTestingInformation() {
     function getTestInformation(item) {
         var testingType = item.querySelector('input[name="type"]').value;
+        var testingDate = item.querySelector('input[name="testDate"]').value;
 
         if (testingType === "PCR Test" || testingType === "Quick Test") {
             var result = item.querySelector('input[name="result"]').value;
             var ctvalue = item.querySelector('input[name="ctvalue"]').value;
             var testID = item.querySelector('input[name="id"]').value;
-            return { 'type': testingType, 'testID': testID, 'result': result, 'ctvalue': ctvalue };
+            return { 'type': testingType, 'testDate': testingDate, 'testID': testID, 'result': result, 'ctvalue': ctvalue };
         }
         else if (testingType === "SPO2") {
             var result = item.querySelector('input[name="bloodoxygenlevel"]').value;
             var testID = item.querySelector('input[name="id"]').value;
-            return { 'type': testingType, 'testID': testID, 'bloodoxygenlevel': result };
+            return { 'type': testingType, 'testDate': testingDate, 'testID': testID, 'bloodoxygenlevel': result };
         }
         else (testingType === "Respiratory Rate")
         {
             var result = item.querySelector('input[name="breath/min"]').value;
             var testID = item.querySelector('input[name="id"]').value;
-            return { 'type': testingType, 'testID': testID, 'breathpermin': result }
+            return { 'type': testingType, 'testDate': testingDate, 'testID': testID, 'breathpermin': result }
         }
     }
 
@@ -600,10 +621,10 @@ function form_submit() {
         data: JSON.stringify(data),  // Convert JSON object to a string
         contentType: 'application/json',  // Set content type to JSON
         success: function (response) {
-            console.log('Data successfully sent to PHP file. Response:', response);
+            window.alert('Data successfully sent to PHP file. Response:', response);
         },
         error: function (error) {
-            console.error('Error sending data to PHP file:', error);
+            window.alert('Error sending data to PHP file:', error);
         }
     });
 }

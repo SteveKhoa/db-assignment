@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCMUT book store</title>
+    <title>Quaratine Camp</title>
     <!-- <base href="http://localhost/" /> -->
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
