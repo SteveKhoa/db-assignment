@@ -38,7 +38,7 @@ foreach ($comorbidityList as $comorbidity) {
 $symptomList = $data['symptomList'];
 foreach ($symptomList as $symptom) {
     $insertSymptom = "INSERT INTO Symptoms (Symptoms_Time, Symptoms_PatientID, Symptoms_Symptoms) 
-                      VALUES (CURRENT_DATE, '{$patientInfo['id']}', '$symptom')";
+                      VALUES ('{$symptom['date']}', '{$patientInfo['id']}', '{$symptom['symptom']}')";
     $conn->query($insertSymptom);
 }
 // Insert admittedpatient table
@@ -57,7 +57,7 @@ $admissionInsertQuery = "INSERT INTO Admission (Admission_PatientID, Admission_S
     '{$patientInfo['id']}', 
     '{$admissionInfo['staffID']}', 
     '{$admissionInfo['admissionDate']}', 
-    'Disney' 
+    'Quaratine Camp' 
 )";
 $conn->query($admissionInsertQuery);
 
@@ -68,7 +68,7 @@ foreach ($testingInfo as $test) {
         '{$patientInfo['id']}', 
         '{$test['testID']}', 
         '{$admissionInfo['staffID']}', 
-        CURRENT_DATE 
+        '{$test['testDate']}'
     )";
     $conn->query($testingInsertQuery);
 
