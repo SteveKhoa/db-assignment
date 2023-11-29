@@ -511,6 +511,7 @@ function ReportslideBarUI(ItemList) {
 
         var h2 = document.createElement("h2");
         h2.className = "col d-flex justify-content-center";
+        h2.setAttribute("style", "font-size:" + Math.max(16 - (Item['Name'].length - 15) * 0.5, 10) + "px");
         h2.textContent = Item['Name'];       // TODO: CHANGE WHEN HAVE INFORMATION
 
         contentDiv.appendChild(img);
