@@ -64,7 +64,7 @@ function retrievePatientData($name)
                     $testingData['ctValue'] = $pcrRow['PCRTest_Ct_Value'];
                     $testingData['result'] = $pcrRow['PCRTest_Result'];
                 }
-
+                $testingData['testDate'] = $testingRow['Testing_Date'] ;
                 $patient['Testing'][] = $testingData;
             }
 

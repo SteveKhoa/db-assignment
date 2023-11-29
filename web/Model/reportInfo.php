@@ -89,7 +89,7 @@ function retrievePatientData($name)
                     $testingData['ctValue'] = $pcrRow['PCRTest_Ct_Value'];
                     $testingData['result'] = $pcrRow['PCRTest_Result'];
                 }
-
+                $testingData['testDate'] = $testingRow['Testing_Date'] ;
                 $patient['Testing'][] = $testingData;
             }
             // ADD TREATMENT HERE 
@@ -128,7 +128,7 @@ function retrievePatientData($name)
                         $medicationData['expireDate'] = $medicationRow['Medication_Expiration_Date'];
                     $treatment['medication'][] = $medicationData;
                 }
-                $patient['Treatment'] = $treatment;
+                $patient['Treatment'][] = $treatment;
                 
             }
 
