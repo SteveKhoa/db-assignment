@@ -28,7 +28,8 @@ def insert(filename, values):
         try:
             cursor.execute(query, value)
         except mysql.connector.errors.IntegrityError as e:
-            print("Warning: ", e, ". Entry dropped.")
+            # print("Warning: ", e, ". Entry dropped.")
+            pass
         except mysql.connector.errors.ProgrammingError as e:
             print("SQL syntax error, {filename}: ".format(filename=filename), e, "\n\n")
 
@@ -56,8 +57,9 @@ def fetch_sheet_json(spreadsheetID, sheetName, A1Range):
         exit() 
     else:
         print("Warning: fetch_json: No handler for {}".format(response.status_code))
-        print("Full json request: ")
+        print("Full json response: ")
         print(json.dumps(response.json(), indent=2))
+        print("\n\n\n")
 
     return response.json()
 
@@ -70,7 +72,11 @@ def main():
         ("ROOM", "A2:E6", "template_room.sql"),
         ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql"),
         ("TREATMENT", "A2:D6", "template_treatment.sql"),
-        ("PERFORM", "A2:C6", "template_perform.sql")
+        ("PERFORM", "A2:C6", "template_perform.sql"),
+        ("MEDICATION", "A2:G6", "template_medication.sql"),
+        ("TAKE_ACTION","A2:B6","template_takeaction.sql"),
+        ("LOCATION_HISTORY", "A2:F6", "template_locationhistory.sql"),
+        ("ADMISSION", "A2:D6", "template_admission.sql"),
     ]
 
     for sheet, a1_range, template_query_file in sheet_list:
