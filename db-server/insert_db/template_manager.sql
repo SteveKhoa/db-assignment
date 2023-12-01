@@ -1,5 +1,5 @@
 INSERT INTO
-    QUARATINE_CAMP_DB.Manager (
+    QUARATINE_CAMP_DB.Managers (
         Manager_ManagerID
     )
 VALUES
