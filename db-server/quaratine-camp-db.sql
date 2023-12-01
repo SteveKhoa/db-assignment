@@ -226,8 +226,7 @@ CREATE TABLE LocationHistory
     LocationHistory_Date                  DATE,      
     PRIMARY KEY (LocationHistory_Admitted_PatientID, LocationHistory_HistoryID),
     CONSTRAINT	locationhis_APbuilID_from_buiID	FOREIGN KEY (LocationHistory_BuildingID,LocationHistory_FloorID,LocationHistory_RoomID)
-				REFERENCES Room(Room_BuildingID,Room_FloorID,Room_RoomID)
-				ON DELETE SET NULL,
+				REFERENCES Room(Room_BuildingID,Room_FloorID,Room_RoomID),
     CONSTRAINT 	locationhisID_from_adID FOREIGN KEY (LocationHistory_Admitted_PatientID)
 				REFERENCES AdmittedPatient(AdmittedPatient_PatientID) 
 				ON DELETE CASCADE
