@@ -183,8 +183,9 @@ CREATE TABLE Perform
 				ON DELETE CASCADE
 );
 -- Datatypes, Datalength, Constraints explanations:
--- the Medication_Code we assume as ID like the assignment 1 "HOSPITAL DATABASE"
--- Medication_Name : VARCHAR(1024) should probably cover the longest case.
+-- Medication_Code : 10 character, according to https://en.wikipedia.org/wiki/National_drug_code
+-- Medication_Effects : VARCHAR(1024) should probably cover the longest description for a medication.
+-- Medication_Name : VARCHAR(64) is enough for a drug name, names too long are not readable for humans
 -- Medication_Price :DECIMAL(10,2) indicates a decimal number with a total of 12 digits, 2 of which are after the decimal point
 --                    - it should probably cover the most expensive case for drug price (at about 6 digits for $2,125,000 ~ 51.595.000.000 VND https://pharmaoffer.com/blog/10-most-expensive-drugs-in-the-world/)
 --                    - it should probably cover the cheappest case for drug price 
@@ -192,9 +193,9 @@ CREATE TABLE Perform
 CREATE TABLE Medication 
 (	
 	Medication_Admitted_PatientID	    CHAR(9)     NOT NULL, 
-    Medication_Code                     CHAR(9)     PRIMARY KEY, 
+    Medication_Code                     CHAR(10)     PRIMARY KEY, 
     Medication_Effects		            VARCHAR(1024),
-    Medication_Name                     VARCHAR(1024),
+    Medication_Name                     VARCHAR(64),
     Medication_Price			        DECIMAL(12,2),
     Medication_Expiration_Date		    DATE        NOT NULL,
     Medication_TreatmentID              CHAR(9)     NOT NULL,
