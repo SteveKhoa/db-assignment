@@ -7,21 +7,21 @@
 <?php
 
 session_start();
-function queryAccount($username, $password)
+function loginVerification($Username, $Password)
 {
-    $userTest = 'testAdmin';
-    $passTest = '123456789';
-    return array('username' => $userTest, 'password' => $passTest);
-}
-function loginVerification($username, $password)
-{
-    $account = queryAccount($username, $password);
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "QUARATINE_CAMP_DB";
 
-    if ($username === $account['username'] && $password === $account['password']) {
-        return true;
-    } else {
-        return true;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
     }
+
+    $loginVerifyQuery = $conn->query("SELECT * FROM users WHERE userName = $Username AND userPass = $Password");
+    return $loginVerifyQuery;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
