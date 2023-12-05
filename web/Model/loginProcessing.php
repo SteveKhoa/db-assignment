@@ -20,7 +20,7 @@ function loginVerification($Username, $Password)
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $loginVerifyQuery = $conn->query("SELECT * FROM users WHERE userName = $Username AND userPass = $Password");
+    $loginVerifyQuery = $conn->query("SELECT * FROM users WHERE Users_Name = '$Username' AND Users_Password = '$Password'");
     return $loginVerifyQuery;
 }
 
