@@ -291,3 +291,17 @@ CREATE TABLE QuickTest
 				REFERENCES Testing(Testing_TestID) 
 				ON DELETE CASCADE
 );
+
+-- Additional table does not exist in original design.
+-- To facilitate Login-Logout service on our application.
+-- Users_Password is always a SHA-256 hashed string.
+CREATE TABLE Users
+(
+    Users_Name VARCHAR(64) PRIMARY KEY,
+    Users_Password CHAR(256)
+);
+
+-- Account: 
+--      testAdmin
+--      123456789
+INSERT INTO Users VALUES ("testAdmin", "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225");
