@@ -110,7 +110,7 @@ CREATE TABLE Comorbidity
 
 CREATE TABLE Symptoms 
 (
-	Symptoms_Time			DATE        NOT NULL,
+	Symptoms_Time			DATETIME        NOT NULL,
     Symptoms_PatientID	    CHAR(9)     NOT NULL, 
     Symptoms_Symptoms        VARCHAR(50) NOT NULL,
     PRIMARY KEY (Symptoms_Time, Symptoms_PatientID, Symptoms_Symptoms),
