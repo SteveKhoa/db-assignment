@@ -1,5 +1,6 @@
 // Adapter:
-function Adapter(testingInfo, patientName) {
+function testAdapter(testingInfo, patientName) {
+    console.log(testingInfo);
     if (testingInfo['type'] === 'quickTest') {
         return { 'type': 'Quick Test', 'value': { 'Patient Name': patientName, 'Result': testingInfo['result'], 'CT Value': testingInfo['ctValue'] } };
     }
@@ -9,7 +10,7 @@ function Adapter(testingInfo, patientName) {
     else if (testingInfo['type'] === 'SPO2') {
         return { 'type': 'SPO2', 'value': { 'Patient Name': patientName, 'Blood Oxygen Level': testingInfo['oxylevel'] } };
     }
-    else if (testingInfo['type'] === 'pcrTest') {
+    else if (testingInfo['type'] === 'PCRTest') {
         return { 'type': 'PCR Test', 'value': { 'Patient Name': patientName, 'Date': testingInfo['testDate'], 'Result': testingInfo['result'], 'CT Value': testingInfo['ctValue'] } };
     }
 }
@@ -50,7 +51,8 @@ function TestingSlot(patientInfo, order) {
         cardCollapse.appendChild(cardBody);
 
         // Append Item Data into Each Field
-        var standardItem = Adapter(testInfo, patientInfo['name']);
+        console.log(testInfo);
+        var standardItem = testAdapter(testInfo, patientInfo['name']);
         linkElement.textContent = standardItem['type'];     // TODO: NEED CHANGE
 
         for (const key in standardItem['value']) {

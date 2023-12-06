@@ -39,30 +39,30 @@ function patientInfoUI(patientInfo) {
     <div class="row d-flex justify-content-center mt-2 mb-2" style="height:50px;">
         <div class="col-md-5 d-flex align-items-center h-100">
             <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
-                <span class="input-group-text h-100 d-flex align-items-center justify-content-center">Address</span>
-                <p class="form-control h-100 text-center align-items-center" style="overflow-y:auto;">${patientInfo['Address']}</p>
-            </div>
-        </div>
-
-        <div class="col-md-5 d-flex align-items-center h-100">
-            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
                 <span class="input-group-text h-100 d-flex align-items-center justify-content-center">Phone number</span>
                 <p class="form-control h-100 d-flex align-items-center justify-content-center" style="overflow-y:auto;">${patientInfo['patientPhone']}</p>
             </div>
         </div>
-    </div>
 
-    <div class="row d-flex justify-content-center mt-2 mb-2" style="height:50px;">
         <div class="col-md-5 d-flex align-items-center h-100">
             <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
                 <span class="input-group-text d-flex justify-content-center h-100">Gender</span>
                 <p class="form-control h-100 d-flex align-items-center justify-content-center">${patientInfo['Gender'] === 'M' ? 'Male' : 'Female'}</p>
             </div>
         </div>
-        <div class="col-md-5 d-flex align-items-center h-100">
-            <div class="input-group d-flex justify-content-center h-100" style="margin:0;">
-                <span class="input-group-text d-flex justify-content-center h-100">Comordities</span>
-                <p class="form-control h-100 text-center align-items-center" style="overflow-y:auto;">${patientInfo['Comorbidity'].join(', ')}</p>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-2 mb-2">
+        <div class="col-md-5 d-flex align-items-center">
+            <div class="input-group d-flex justify-content-center" style="margin: 0; height: 100%;">
+                <span class="input-group-text h-100 align-items-center" style="margin: 0;">Address</span>
+                <p class="form-control h-100 d-flex align-items-center" style="margin: 0;">${patientInfo['Address']}</p>
+            </div>
+        </div>
+        <div class="col-md-5 d-flex align-items-center">
+            <div class="input-group d-flex justify-content-center" style="margin: 0; height: 100%;">
+            <span class="input-group-text h-100 align-items-center" style="margin: 0;">Comorbidity</span>
+                <p class="form-control h-100 d-flex align-items-center" style="margin: 0;">${patientInfo['Comorbidity'].join(', ')}</p>
             </div>
         </div>
     </div>`;
@@ -232,18 +232,18 @@ function tableSymptomUI(SymptomList, order) {
 // }
 
 // Adapter: use for standardize the test structure
-function Adapter(testingInfo) {
+function ReportAdapter(testingInfo) {
     if (testingInfo['type'] === 'quickTest') {
         return { 'type': 'Quick Test', 'testDate': testingInfo['testDate'] };
     }
     else if (testingInfo['type'] === 'respiratoryRate') {
-        return { 'type': 'Respiratory Rate', 'testDate': testingInfo['testDate']  };
+        return { 'type': 'Respiratory Rate', 'testDate': testingInfo['testDate'] };
     }
     else if (testingInfo['type'] === 'SPO2') {
-        return { 'type': 'SPO2', 'testDate': testingInfo['testDate']  };
+        return { 'type': 'SPO2', 'testDate': testingInfo['testDate'] };
     }
-    else if (testingInfo['type'] === 'pcrTest') {
-        return { 'type': 'PCR Test', 'testDate': testingInfo['testDate']  };
+    else if (testingInfo['type'] === 'PCRTest') {
+        return { 'type': 'PCR Test', 'testDate': testingInfo['testDate'] };
     }
 }
 
@@ -287,7 +287,7 @@ function listTestingUI(testingList, order) {
         var tbodyElement = document.createElement("tbody");
 
         testingList.forEach(item => {
-            var standardTest = Adapter(item);
+            var standardTest = ReportAdapter(item);
             tbodyElement.appendChild(TestRow(standardTest));
         });
 
@@ -474,6 +474,7 @@ function reportUI(patientList) {
         // Create the first carousel item (active)
         var CarouselItemDiv = document.createElement("div");
         CarouselItemDiv.className = "carousel-item" + (i === 0 ? " active" : "");
+        CarouselItemDiv.id = `report${patientList[i]['PatientID']}`;
         CarouselItemDiv.appendChild(createReportPatient(patientList[i], i)); // TODO: CHANGE WHEN HAVE DATA
 
         carouselInnerDiv.appendChild(CarouselItemDiv);
@@ -487,6 +488,9 @@ function reportUI(patientList) {
     return border;
 }
 
+function reformatReportDOM(element) {
+}
+
 function ReportslideBarUI(ItemList) {
 
     function infoArea(Item, order) {
@@ -496,8 +500,29 @@ function ReportslideBarUI(ItemList) {
         var innerContentDiv = document.createElement("div");
         innerContentDiv.className = "d-flex justify-content-center w-100 h-100";
 
-        var contentDiv = document.createElement("div");
-        contentDiv.className = "d-flex flex-row align-items-center";
+        var contentDiv = document.createElement("button");
+        contentDiv.className = "d-flex flex-row align-items-center btn";
+        contentDiv.onclick = function () {
+            console.log(Item['PatientID']);
+            const contentDiv = document.querySelector(`#report${Item['PatientID']}`);
+            const options = {
+                margin: 10, // Set the margin (in mm) of the PDF
+                filename: 'exported_content.pdf', // Set the filename of the exported PDF
+                image: { type: 'jpeg', quality: 1.0 }, // Set the image type and quality
+                html2canvas: { scale: 2 }, // Set the scale factor for rendering the HTML to canvas
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }, // Set the format and orientation of the PDF
+                pagebreak: { mode: ['avoid-all'] }, // Set page break mode to avoid breaking content
+                jsPDFCustom: { // Add custom settings to jsPDF (optional)
+                    unit: 'pt',
+                    format: 'a3',
+                    hotfixes: ['px_scaling'],
+                },
+            };
+
+            // Use html2pdf.js to export the content to PDF
+            html2pdf(contentDiv, options);
+
+        }
         contentDiv.style.width = "70%";
 
         var img = document.createElement("img");
@@ -605,7 +630,7 @@ function ReportsearchBarUI() {
         if (event.key === "Enter") {
 
             retrievePatientReport(this.value).then(json_data => {
-                
+
                 var slidingBar = document.getElementById("carousel_info");
                 if (slidingBar !== null) { mainContainer.removeChild(slidingBar); }
 
