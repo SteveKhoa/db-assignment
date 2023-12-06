@@ -22,6 +22,8 @@ function loginVerification($Username, $Password)
 
     // Hash password before querying
     $hashedPass = hash('sha1', $Password);
+    $Username = $conn->real_escape_string($Username);
+
     $loginVerifyQuery = $conn->query("SELECT * FROM users WHERE Users_Name = '$Username' AND Users_Password = '$hashedPass'");
     if ($loginVerifyQuery->num_rows > 0) {
         return true;

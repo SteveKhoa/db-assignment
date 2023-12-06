@@ -1,6 +1,6 @@
 <?php
 
-function retrievePatientData($name)
+function retrievePatientData($name, $date)
 {
     $servername = "localhost";
     $username = "root";
@@ -22,15 +22,18 @@ function retrievePatientData($name)
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
+
+            // Retrieve testing information for this patient
+            $testingQuery = "SELECT * FROM Testing WHERE Testing_PatientID = '{$row['Patient_PatientID']}' AND Testing_Date <= '{$date}'";
+            $testingResult = $conn->query($testingQuery);
+
+            if ($testingResult->num_rows <= 0) { continue; }
+
             $patient = array(
                 'name' => $row['Patient_Fullname'],
                 'patientID' => $row['Patient_PatientID'],
                 'Testing' => array()
             );
-
-            // Retrieve testing information for this patient
-            $testingQuery = "SELECT * FROM Testing WHERE Testing_PatientID = '{$row['Patient_PatientID']}'";
-            $testingResult = $conn->query($testingQuery);
 
             while ($testingRow = $testingResult->fetch_assoc()) {
 
@@ -81,7 +84,7 @@ function retrievePatientData($name)
 }
 
 if (isset($_POST['name'])) {
-    retrievePatientData($_POST['name']);
+    retrievePatientData($_POST['name'], $_POST['date']);
 } else {
     echo json_encode(array("message" => "Please provide a name for the search."));
 }
