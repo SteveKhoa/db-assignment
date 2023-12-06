@@ -208,8 +208,7 @@ function TestsearchBarUI() {
     inputDate.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
 
-            retrievePatientTesting(this.value, inputName.value).then(json_data => {
-
+            retrievePatientTesting(inputName.value, this.value).then(json_data => {
                 var testingUI = TestingListUI(json_data);
 
                 var content = document.getElementById("content");
