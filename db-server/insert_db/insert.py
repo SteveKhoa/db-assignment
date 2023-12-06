@@ -68,7 +68,7 @@ def main():
     spreadsheet_id = "1y8QOIv7SPQbMkiN9BLJabSScwqAWSmgDPnFHM5aPq7Q"
     sheet_list = [
         ("PATIENT", "A2:F6", "template_patient.sql"),
-        ("PEOPLE", "A2:D6", "template_people.sql"),
+        ("PEOPLE", "A2:D8", "template_people.sql"),
         ("ROOM", "A2:E6", "template_room.sql"),
         ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql"),
         ("TREATMENT", "A2:D6", "template_treatment.sql"),

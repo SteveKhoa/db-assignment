@@ -1,13 +1,4 @@
--- ===========================================================
--- Write a procedure to sort the nurses in decreasing number of patients 
---       he/she  takes care in a period of time (1 mark).  
--- Input: Start date, End date 
--- Output: A list of sorting nurses. 
--- ===========================================================
--- =========== DRAFT file, NOT testing yet====================
--- ===========================================================
-
-USE QUARATINE_CAMP_DB;
+DELIMITER $$
 
 CREATE PROCEDURE SortNursesByPatients(
     IN startDate DATE,
@@ -15,7 +6,7 @@ CREATE PROCEDURE SortNursesByPatients(
 )
 BEGIN
     -- Create a temporary table to store the nurse ID and the count of patients they take care of
-    CREATE TEMPORARY TABLE NursePatientCount AS
+    CREATE TEMPORARY TABLE IF NOT EXISTS NursePatientCount AS
     SELECT
         ap.AdmittedPatient_NurseID AS NurseID,
         COUNT(a.Admission_PatientID) AS PatientCount
@@ -43,4 +34,6 @@ BEGIN
 
     -- Drop the temporary table
     DROP TEMPORARY TABLE IF EXISTS NursePatientCount;
-END; 
+END $$
+
+DELIMITER ;
