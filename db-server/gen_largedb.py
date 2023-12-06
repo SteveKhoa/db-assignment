@@ -8,6 +8,8 @@
 """
 import mysql.connector
 import time
+import random
+import json
 
 
 # Number of entries generated
@@ -15,7 +17,7 @@ import time
 n_entries = 1000000
 
 
-def gen_data(seed, batch_size, last_char = "9"):
+def gen_data(seed, batch_size):
     # Pattern of each field
     patient = "P-------9"  # CHAR(9) PRIMARY, requires further processing
     identity = "999999910001"  # CHAR(12) NOT NULL
@@ -24,13 +26,16 @@ def gen_data(seed, batch_size, last_char = "9"):
     fullname = "A Random Name Jr."  # VARCHAR(1024) NOT NULL
     phone = "1234567890"  # CHAR(10) NOT NULL
 
-    entry = [[patient, identity, address, gender, fullname, phone]] * batch_size
+    entries = [[patient, identity, address, gender, fullname, phone]] * batch_size
 
     for i in range(0, batch_size):
-        entry[i][0] = "P" + str(i + seed).zfill(7) + last_char
-        entry[i] = tuple(entry[i])
+        entries[i][0] = "P" + str(i + seed).zfill(7) + str(random.randint(1,9))
+        entries[i][5] = str(random.randint(1000000000,9999999999))
+        entries[i] = tuple(entries[i])
 
-    return entry
+    random.shuffle(entries)
+
+    return entries
 
 
 def main():
