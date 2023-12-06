@@ -1,0 +1,74 @@
+{
+    "query_block": {
+      "select_id": 1,
+      "cost_info": {
+        "query_cost": "11.51"
+      },
+      "nested_loop": [
+        {
+          "table": {
+            "table_name": "patient",
+            "access_type": "ref",
+            "possible_keys": [
+              "PRIMARY",
+              "patNameIdx"
+            ],
+            "key": "patNameIdx",
+            "used_key_parts": [
+              "Patient_Fullname"
+            ],
+            "key_length": "42",
+            "ref": [
+              "const"
+            ],
+            "rows_examined_per_scan": 1,
+            "rows_produced_per_join": 1,
+            "filtered": "100.00",
+            "cost_info": {
+              "read_cost": "0.50",
+              "eval_cost": "0.10",
+              "prefix_cost": "0.60",
+              "data_read_per_join": "5K"
+            },
+            "used_columns": [
+              "Patient_PatientID",
+              "Patient_Fullname"
+            ],
+            "attached_condition": "(`quaratine_camp_db`.`patient`.`Patient_Fullname` = 'Dinh Thi%')"
+          }
+        },
+        {
+          "table": {
+            "table_name": "testing",
+            "access_type": "ref",
+            "possible_keys": [
+              "Testing_pID_from_paID"
+            ],
+            "key": "Testing_pID_from_paID",
+            "used_key_parts": [
+              "Testing_PatientID"
+            ],
+            "key_length": "36",
+            "ref": [
+              "quaratine_camp_db.patient.Patient_PatientID"
+            ],
+            "rows_examined_per_scan": 9,
+            "rows_produced_per_join": 3,
+            "filtered": "33.33",
+            "cost_info": {
+              "read_cost": "9.90",
+              "eval_cost": "0.33",
+              "prefix_cost": "11.51",
+              "data_read_per_join": "399"
+            },
+            "used_columns": [
+              "Testing_PatientID",
+              "Testing_TestID",
+              "Testing_Date"
+            ],
+            "attached_condition": "(`quaratine_camp_db`.`testing`.`Testing_Date` < DATE'2022-01-01')"
+          }
+        }
+      ]
+    }
+  }
