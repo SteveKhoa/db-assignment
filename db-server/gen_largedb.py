@@ -17,7 +17,7 @@ import json
 n_entries = 1000000
 
 
-def gen_data(seed, batch_size):
+def gen_patient(seed, batch_size):
     # Pattern of each field
     patient = "P-------9"  # CHAR(9) PRIMARY, requires further processing
     identity = "999999910001"  # CHAR(12) NOT NULL
@@ -72,7 +72,7 @@ VALUES
 
         print("== Batch index: {} + {} ==".format(batch_idx, batch_size))
 
-        entries = gen_data(batch_idx, batch_size)
+        entries = gen_patient(batch_idx, batch_size)
 
         try:
             cursor.executemany(query, entries)
