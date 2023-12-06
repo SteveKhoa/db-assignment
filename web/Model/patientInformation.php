@@ -11,9 +11,12 @@ function retrieveDatabase($name)
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
-    $sql = "SELECT * FROM Patient WHERE Patient_Fullname LIKE '%$name%'";
-    $result = $conn->query($sql);
+    //$name = $conn->real_escape_string($name);
+    $sql = $conn->prepare("SELECT * FROM Patient WHERE Patient_Fullname LIKE CONCAT('%', ?, '%')");
+    $sql->bind_param("s",$name);
+    $sql->execute();
+    $result = $sql->get_result();
+    //$result = $conn->query($sql);
 
     $patients = array();
 
