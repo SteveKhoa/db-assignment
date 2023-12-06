@@ -148,32 +148,53 @@ function TestingListUI(itemList) {
 }
 
 function TestsearchBarUI() {
+
     var mainContainer = document.createElement("div");
-    mainContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
-    mainContainer.style.width = "50%";
-    mainContainer.style.marginLeft = "10px";
+
+////////////////////////////////
+
+    var nameContainer = document.createElement("div");
+    nameContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
+    nameContainer.style.width = "50%";
+    nameContainer.style.marginLeft = "10px";
 
     // Create the input element
-    var inputElement = document.createElement("input");
-    inputElement.type = "text";
-    inputElement.className = "form-control";
-    inputElement.id = "name";
-    inputElement.placeholder = "Enter email";
-    inputElement.name = "name";
-    inputElement.addEventListener("keypress", function (event) {
+    var inputName = document.createElement("input");
+    inputName.type = "text";
+    inputName.className = "form-control";
+    inputName.id = "name";
+    inputName.placeholder = "Enter email";
+    inputName.name = "name";
+    // Create the label element
+    var labelName = document.createElement("label");
+    labelName.htmlFor = "name";
+    labelName.textContent = "Name";
+
+    nameContainer.appendChild(inputName); nameContainer.appendChild(labelName);
+
+    ////////////////////////////////
+
+    var dateContainer = document.createElement("div");
+    dateContainer.className = "form-floating mb-3 mt-3 rounded-1 border";
+    dateContainer.style.width = "50%";
+    dateContainer.style.marginLeft = "10px";
+
+    // Create the input element
+    var inputDate = document.createElement("input");
+    inputDate.type = "date";
+    inputDate.className = "form-control";
+    inputDate.id = "date";
+    inputDate.placeholder = "Enter date";
+    inputDate.name = "date";
+    // Create the label element
+    var labelDate = document.createElement("label");
+    labelDate.htmlFor = "date";
+    labelDate.textContent = "Date";
+
+    inputName.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
 
-            retrievePatientTesting(this.value).then(json_data => {
-                //     var new_json_data = [{
-                //         "name": "Le Thu Thuy", "patientID": 100001, "Testing": [
-                //             { "type": "respiratoryRate", "breathpermin": 31 },
-                //             { "type": "SPO2", "oxylevel": 12 }
-                //         ]
-                //     },
-                //     { 'name': 'Le Trung Trinh', 'patientID': 100002, "Testing": [
-                //         {'type': 'quickTest', 'ctValue': 14, 'result': 'positive'}
-                //     ]}
-                // ];
+            retrievePatientTesting(this.value, inputDate.value).then(json_data => {
 
                 var testingUI = TestingListUI(json_data);
 
@@ -184,30 +205,40 @@ function TestsearchBarUI() {
         }
     });
 
-    // Create the label element
-    var labelElement = document.createElement("label");
-    labelElement.htmlFor = "name";
-    labelElement.textContent = "Name";
+    inputDate.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
 
-    // Append input and label to the main container
-    mainContainer.appendChild(inputElement);
-    mainContainer.appendChild(labelElement);
+            retrievePatientTesting(this.value, inputName.value).then(json_data => {
+
+                var testingUI = TestingListUI(json_data);
+
+                var content = document.getElementById("content");
+                content.innerHTML = "";
+                content.appendChild(testingUI);
+            });
+        }
+    });
+
+    dateContainer.appendChild(inputDate); dateContainer.appendChild(labelDate);
+
+////////////////////////////////
+    mainContainer.appendChild(nameContainer); mainContainer.appendChild(dateContainer);
 
     return mainContainer;
 }
 
-function retrievePatientTesting(name) {
+function retrievePatientTesting(name, date) {
     return fetch('./Model/TestingDetail.php',
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'name=' + encodeURIComponent(name),
-        })
-        .then(response => response.json())
-        .then(data => {
-            return data;
-        })
-        .catch(error => console.error('Error:', error));
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'name=' + encodeURIComponent(name) + '&date=' + encodeURIComponent(date),
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data;
+    })
+    .catch(error => console.error('Error:', error));
 }
