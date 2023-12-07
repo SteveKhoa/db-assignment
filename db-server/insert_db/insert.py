@@ -71,24 +71,24 @@ def fetch_sheet_json(spreadsheetID, sheetName, A1Range):
 def main():
     spreadsheet_id = "1y8QOIv7SPQbMkiN9BLJabSScwqAWSmgDPnFHM5aPq7Q"
     sheet_list = [
-        ("PATIENT", "A2:F6", "template_patient.sql"),
-        ("PEOPLE", "A2:D8", "template_people.sql"),
+        ("PATIENT", "A2:F16", "template_patient.sql"),
+        ("PEOPLE", "A2:D9", "template_people.sql"),
         ("ROOM", "A2:E6", "template_room.sql"),
-        ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql"),
+        ("ADMITTED_PATIENT", "A2:E16", "template_adpatient.sql"),
         ("TREATMENT", "A2:D6", "template_treatment.sql"),
         ("PERFORM", "A2:C6", "template_perform.sql"),
         ("MEDICATION", "A2:G6", "template_medication.sql"),
         ("TAKE_ACTION","A2:B6","template_takeaction.sql"),
         ("LOCATION_HISTORY", "A2:F6", "template_locationhistory.sql"),
-        ("ADMISSION", "A2:D6", "template_admission.sql"),
+        ("ADMISSION", "A2:D16", "template_admission.sql"),
         ("HEAD_OF_THE_CAMP", "A2:B2", "template_headofthecamp.sql"),
         ("MANAGER", "A2:A4", "template_manager.sql"),
         ("COMORBIDITY", "A2:B6", "template_comorbidity.sql"),
         ("DISCHARGE_PATIENT", "A2:B6", "template_dischargepatient.sql"),
         ("SYMPTOMS","A2:C9", "template_symptoms.sql"),
-        ("TESTING","A2:D26","template_testing.sql"),
-        ("PCR_TEST", "A2:C11", "template_pcrtest.sql"),
-        ("RESPIRATORY_RATE", "A2:B6", "template_respiratoryrate.sql"),
+        ("TESTING","A2:D46","template_testing.sql"),
+        ("PCR_TEST", "A2:C21", "template_pcrtest.sql"),
+        ("RESPIRATORY_RATE", "A2:B16", "template_respiratoryrate.sql"),
         ("SPO2", "A2:B6", "template_spo2.sql"),
         ("QUICK_TEST", "A2:C6", "template_quicktest.sql")
     ]
