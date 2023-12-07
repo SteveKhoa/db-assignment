@@ -11,7 +11,8 @@ DELIMITER $$
 
 CREATE PROCEDURE SortNursesByPatients(
     IN startDate DATE,
-    IN endDate DATE
+    IN endDate DATE,
+    OUT returnTable
 )
 BEGIN
     -- Create a temporary table to store the nurse ID and the count of patients they take care of
@@ -20,8 +21,7 @@ BEGIN
         ap.AdmittedPatient_NurseID AS NurseID,
         COUNT(a.Admission_PatientID) AS PatientCount
     FROM
-        Admission a
-    JOIN AdmittedPatient ap ON a.Admission_PatientID = ap.AdmittedPatient_PatientID
+        Admission a JOIN AdmittedPatient ap ON a.Admission_PatientID = ap.AdmittedPatient_PatientID
     WHERE
         a.Admission_Date BETWEEN startDate AND endDate
     GROUP BY
@@ -33,9 +33,9 @@ BEGIN
         p.People_First_Name,
         p.People_Last_Name,
         NPC.PatientCount
+    INTO returnTable
     FROM
-        People p
-    JOIN NursePatientCount NPC ON p.People_ID = NPC.NurseID
+        People p JOIN NursePatientCount NPC ON p.People_ID = NPC.NurseID
     WHERE
         p.People_eType = 'N'
     ORDER BY
