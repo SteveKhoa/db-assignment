@@ -1,5 +1,7 @@
 -- Select all the patient information whose name is ‘Nguyen Van A’.
 
+-- Awaiting to be changed
+
 USE quaratine_camp_db;
 
 DROP PROCEDURE IF EXISTS PatientInfo;
@@ -7,45 +9,28 @@ DROP PROCEDURE IF EXISTS PatientInfo;
 DELIMITER $$
 
 CREATE PROCEDURE PatientInfo(
-    IN p_name VARCHAR(255)
+    IN p_name VARCHAR(1024)
 )
 BEGIN
-    DECLARE done INT DEFAULT FALSE;
-    DECLARE ID INT;
-    DECLARE IDNum VARCHAR(255);
-    DECLARE address VARCHAR(255);
-    DECLARE gender VARCHAR(10);
-    DECLARE fullname VARCHAR(255);
-    DECLARE phone VARCHAR(20);
-
-    DECLARE cur CURSOR FOR
-        SELECT PATIENT_PATIENTID AS ID,
-               PATIENT_IDENTITY_NUMBER AS IDNum,
-               PATIENT_ADDRESS AS address,
-               PATIENT_GENDER AS gender,
-               PATIENT_FULLNAME AS fullname,
-               PATIENT_PHONE AS phone
-        FROM PATIENT
-        WHERE LOWER(PATIENT_FULLNAME) = LOWER(p_name);
-
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
-    OPEN cur;
-
-    read_loop: LOOP
-        FETCH cur INTO ID, IDNum, address, gender, fullname, phone;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-
-        -- You can process the data as needed, or simply print it for testing
-        -- For example, you can use SELECT statements to return the results
-
-        SELECT ID, IDNum, address, gender, fullname, phone;
-
-    END LOOP;
-
-    CLOSE cur;
-END $$
+    SELECT 
+		Patient_PatientID AS ID, 
+		Patient_Identity_Number AS `Identity Number`,  
+        Patient_Fullname AS Fullname, 
+        Patient_Gender AS Gender, 
+        Patient_Address AS Address, 
+        Patient_Phone AS Phone, 
+        DischargePatient_Date AS `Discharge Date`, 
+        Admission_Date AS `Admitted Date`, 
+        Admission_Patient_Location AS `Admitted From`, 
+        AdmittedPatient_BuildingID AS `Building`, 
+        AdmittedPatient_FloorID AS `Floor`, 
+        AdmittedPatient_RoomID AS `Room`, 
+        AdmittedPatient_NurseID  AS `Nurse ID`
+        FROM  Patient LEFT JOIN DischargePatient ON Patient.Patient_PatientID = DischargePatient.DischargePatient_PatientID
+		LEFT JOIN Admission ON Patient.Patient_PatientID = Admission.Admission_Date
+		LEFT JOIN AdmittedPatient ON Patient.Patient_PatientID = AdmittedPatient.AdmittedPatient_PatientID
+        WHERE Patient_Fullname = 'Nguyen Gia Khanh'
+    ;
+END
 
 DELIMITER ;
