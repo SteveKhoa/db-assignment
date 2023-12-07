@@ -8,5 +8,5 @@ DROP INDEX dateIdx on quaratine_camp_db.testing;
 SELECT Testing_TestID, Testing_Date
 FROM quaratine_camp_db.testing, quaratine_camp_db.patient 
 WHERE Testing_PatientID=Patient_PatientID 
-AND Patient_Fullname='Dinh Thi%'
+AND Patient_Fullname='Dinh Thi Thuy'
 AND Testing_Date < '2022-01-01';
