@@ -28,7 +28,7 @@ def insert(filename, values):
         try:
             cursor.execute(query, value)
         except mysql.connector.errors.IntegrityError as e:
-            print("Warning: ", e, ". Entry dropped.")
+            print("Warning: at value ", value, "\n", e, "\nEntry dropped.\n")
             pass
         except mysql.connector.errors.ProgrammingError as e:
             print("SQL syntax error, {filename}: ".format(filename=filename), e, "\n\n")
@@ -72,7 +72,7 @@ def main():
     spreadsheet_id = "1y8QOIv7SPQbMkiN9BLJabSScwqAWSmgDPnFHM5aPq7Q"
     sheet_list = [
         ("PATIENT", "A2:F6", "template_patient.sql"),
-        ("PEOPLE", "A2:D8", "template_people.sql"),
+        ("PEOPLE", "A2:D9", "template_people.sql"),
         ("ROOM", "A2:E6", "template_room.sql"),
         ("ADMITTED_PATIENT", "A2:E6", "template_adpatient.sql"),
         ("TREATMENT", "A2:D6", "template_treatment.sql"),
@@ -81,8 +81,8 @@ def main():
         ("TAKE_ACTION","A2:B6","template_takeaction.sql"),
         ("LOCATION_HISTORY", "A2:F6", "template_locationhistory.sql"),
         ("ADMISSION", "A2:D6", "template_admission.sql"),
-        ("HEAD_OF_THE_CAMP", "A2:B2", "template_headofthecamp.sql"),
         ("MANAGER", "A2:A4", "template_manager.sql"),
+        ("HEAD_OF_THE_CAMP", "A2:B2", "template_headofthecamp.sql"),
         ("COMORBIDITY", "A2:B6", "template_comorbidity.sql"),
         ("DISCHARGE_PATIENT", "A2:B6", "template_dischargepatient.sql"),
         ("SYMPTOMS","A2:C9", "template_symptoms.sql"),
