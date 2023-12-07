@@ -252,12 +252,12 @@ CREATE TABLE Testing
 -- CT Values is an integer number, usually ranging from
 -- 0 (very infectious) to 40-45 (no virus at all)
 -- so i think an integer that has 2 digits is enough
--- the result can be "positive" or "negative" so VARCHAR(15) is enough 
+-- the result can be "positive" or "negative" or "undefined" so VARCHAR(10) is enough 
 CREATE TABLE PCRTest 
 (	
 	PCRTest_TestID			    CHAR(9)        PRIMARY KEY,
     PCRTest_Ct_Value	        DECIMAL(2,0), 
-    PCRTest_Result              VARCHAR(15),
+    PCRTest_Result              VARCHAR(10),
     CONSTRAINT 	PCR_testID_from_test FOREIGN KEY (PCRTest_TestID)
 				REFERENCES Testing(Testing_TestID) 
 				ON DELETE CASCADE
