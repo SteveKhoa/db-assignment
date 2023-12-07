@@ -2,6 +2,8 @@
 -- Input: Patient ID 
 -- Output: A list of testing
 
+USE quaratine_camp_db;
+
 
 DELIMITER $$
 

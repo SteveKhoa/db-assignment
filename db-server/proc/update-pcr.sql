@@ -2,6 +2,8 @@
 -- threshold value for all  patients whose admission date 
 -- is from 01/09/2020. (0.5 mark) 
 
+USE quaratine_camp_db;
+
 DELIMITER $$ 
 
 CREATE PROCEDURE UpdatePCR(
