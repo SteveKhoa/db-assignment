@@ -27,7 +27,7 @@ BEGIN
         AdmittedPatient_RoomID AS `Room`, 
         AdmittedPatient_NurseID  AS `Nurse ID`
         FROM  Patient LEFT JOIN DischargePatient ON Patient.Patient_PatientID = DischargePatient.DischargePatient_PatientID
-		LEFT JOIN Admission ON Patient.Patient_PatientID = Admission.Admission_Date
+		LEFT JOIN Admission ON Patient.Patient_PatientID = Admission.Admission_PatientID
 		LEFT JOIN AdmittedPatient ON Patient.Patient_PatientID = AdmittedPatient.AdmittedPatient_PatientID
         WHERE Patient_Fullname LIKE CONCAT('%', p_name, '%')
     ;
