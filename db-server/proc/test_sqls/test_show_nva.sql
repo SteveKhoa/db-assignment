@@ -1,0 +1,33 @@
+SET SQL_SAFE_UPDATES = 0;
+
+CALL PatientInfo("Nguyen Van A");
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+CALL PatientInfo("Nguyen");
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+CALL PatientInfo("V");
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+CALL PatientInfo("N");
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+CALL PatientInfo("");
+
+SET SQL_SAFE_UPDATES = 1;
