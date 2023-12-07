@@ -1,6 +1,8 @@
 -- Write a procedure to sort the nurses in decreasing number 
 -- of patients he/she  takes care in a period of time (1 mark).
 
+USE quaratine_camp_db;
+
 DELIMITER $$
 
 CREATE PROCEDURE SortNursesByPatients(

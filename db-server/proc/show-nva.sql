@@ -1,5 +1,7 @@
 -- Select all the patient information whose name is ‘Nguyen Van A’.
 
+USE quaratine_camp_db;
+
 DELIMITER $$
 
 CREATE PROCEDURE PatientInfo(
