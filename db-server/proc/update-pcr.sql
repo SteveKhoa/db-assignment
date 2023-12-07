@@ -14,7 +14,7 @@ CREATE PROCEDURE UpdatePCR(
 BEGIN
     UPDATE PCRTEST
     SET PCRTest_Result = 'Positive'
-    WHERE dateTestID IN ( 
+    WHERE PCRTest_TestID IN ( 
             SELECT Testing_TestID 
             FROM TESTING JOIN ADMISSION 
                 ON TESTING.TESTING_STAFFID = ADMISSION.ADMISSION_STAFFID 
