@@ -3,6 +3,8 @@
 
 USE quaratine_camp_db;
 
+DROP PROCEDURE IF EXISTS SortNursesByPatients;
+
 DELIMITER $$
 
 CREATE PROCEDURE SortNursesByPatients(

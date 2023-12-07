@@ -4,6 +4,8 @@
 
 USE quaratine_camp_db;
 
+DROP PROCEDURE IF EXISTS FindTesting;
+
 
 DELIMITER $$
 

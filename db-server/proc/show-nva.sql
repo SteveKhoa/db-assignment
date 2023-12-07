@@ -2,6 +2,8 @@
 
 USE quaratine_camp_db;
 
+DROP PROCEDURE IF EXISTS PatientInfo;
+
 DELIMITER $$
 
 CREATE PROCEDURE PatientInfo(
