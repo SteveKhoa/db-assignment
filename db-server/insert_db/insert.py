@@ -28,10 +28,14 @@ def insert(filename, values):
         try:
             cursor.execute(query, value)
         except mysql.connector.errors.IntegrityError as e:
-            # print("Warning: ", e, ". Entry dropped.")
+            print("Warning: ", e, ". Entry dropped.")
             pass
         except mysql.connector.errors.ProgrammingError as e:
             print("SQL syntax error, {filename}: ".format(filename=filename), e, "\n\n")
+        except mysql.connector.errors.Error as e:
+            print("SQL generic error, see more:\n")
+            print(e)
+            print("--------------------------------------\n");
 
     conn.commit()
 
