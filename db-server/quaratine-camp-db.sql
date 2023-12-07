@@ -252,7 +252,7 @@ CREATE TABLE Testing
 -- CT Values is an integer number, usually ranging from
 -- 0 (very infectious) to 40-45 (no virus at all)
 -- so i think an integer that has 2 digits is enough
--- the result can be "positive" or "negative" or "undefined" so VARCHAR(10) is enough 
+-- the result can be "Positive" or "Negative" or "Undefined" so VARCHAR(10) is enough 
 CREATE TABLE PCRTest 
 (	
 	PCRTest_TestID			    CHAR(9)        PRIMARY KEY,
