@@ -1,3 +1,5 @@
+-- Select all the patient information whose name is ‘Nguyen Van A’.
+
 DELIMITER $$
 
 CREATE PROCEDURE PatientInfo(

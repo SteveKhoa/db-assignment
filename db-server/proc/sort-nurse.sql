@@ -1,3 +1,6 @@
+-- Write a procedure to sort the nurses in decreasing number 
+-- of patients he/she  takes care in a period of time (1 mark).
+
 DELIMITER $$
 
 CREATE PROCEDURE SortNursesByPatients(

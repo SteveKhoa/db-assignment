@@ -1,3 +1,7 @@
+-- Update patient PCR test to positive with null cycle 
+-- threshold value for all  patients whose admission date 
+-- is from 01/09/2020. (0.5 mark) 
+
 DELIMITER $$ 
 
 CREATE PROCEDURE UpdatePCR(

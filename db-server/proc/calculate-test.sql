@@ -1,3 +1,8 @@
+-- Write a function to calculate the testing for each patient (1 mark). 
+-- Input: Patient ID 
+-- Output: A list of testing
+
+
 DELIMITER $$
 
 CREATE PROCEDURE FindTesting(IN PatientID CHAR(9))
