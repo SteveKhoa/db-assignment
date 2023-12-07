@@ -50,10 +50,10 @@ BEGIN
     INNER JOIN Testing ON Testing.Testing_TestID = QuickTest.QuickTest_TestID
     WHERE Testing.Testing_PatientID = PatientID;
 
-    -- You can use the TestTable as needed within this stored procedure
+    -- Return table
     SELECT * FROM TestTable;
 
-    -- Optionally drop the temporary table when done
+    -- Drop temporary table for this procedure
     DROP TEMPORARY TABLE IF EXISTS TestTable;
 END $$
 
