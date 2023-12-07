@@ -9,6 +9,7 @@
 
 import mysql.connector
 import insert_db.insert 
+import proc.init_proc
 import os
 
 
@@ -32,10 +33,15 @@ if __name__ == "__main__":
     query_steps = [
         "quaratine-camp-db.sql",
         "{}/insert-db/insert.py".format(os.path.dirname(os.path.realpath(__file__))),
+        "{}/proc/init_proc.py".format(os.path.dirname(os.path.realpath(__file__))),
     ]
 
     for file in query_steps:
-        ext = os.path.splitext(file)[-1]
+        """This code is unclean, heavily couples the 
+        `defining` step and `executing step. Must refactor later.`
+        """
+        # ext = os.path.splitext(file)[-1]
+        ext = os.path.split(file)[-1]
 
         if ext == ".sql":
             query_statement = get_query_statement(file)
@@ -44,7 +50,9 @@ if __name__ == "__main__":
                 # the cursor in multi-query execution,
                 # otherwise, no query would execute.
                 pass
-        elif ext == ".py":
+        elif ext == "insert.py":
             insert_db.insert.main()
+        elif ext == "init_proc.py":
+            proc.init_proc.main()
 
     conn.commit()

@@ -14,7 +14,7 @@ def get_query_statement(filename):
     return retval
 
 
-if __name__ == "__main__":
+def main():
     conn = mysql.connector.connect(host="localhost", user="root")
     cursor = conn.cursor()  
 
@@ -49,3 +49,6 @@ if __name__ == "__main__":
         
         conn.commit()
     
+
+if __name__ == "__main__":
+    main()
