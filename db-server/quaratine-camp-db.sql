@@ -305,3 +305,89 @@ CREATE TABLE Users
 --      testAdmin
 --      123456789
 INSERT INTO Users VALUES ("testAdmin", "f7c3bc1d808e04732adf679965ccc34ca7ae3441");
+
+
+-- TRIGGERS TO MAINTAIN DATABASE INTEGRITY
+
+-- Req 1: In a camp, there is only one head for that camp
+CREATE TRIGGER HeadCampTrigger
+BEFORE INSERT ON HeadOfTheCamp 
+FOR EACH ROW
+BEGIN
+    DECLARE row_count INT;
+
+    SELECT COUNT(*) FROM HeadOfTheCamp INTO row_count;
+
+    IF row_count >= 1 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You can not have more than one Head of the Camp.';
+    END IF;
+END;
+
+
+-- Req 2: All of the values such as CT value, blood oxygen levels 
+-- and number of breaths/min should be larger or equal than 0.
+CREATE TRIGGER PCRTrigger
+BEFORE INSERT ON PCRTest
+FOR EACH ROW
+BEGIN
+    IF NEW.PCRTest_Ct_Value < 0 THEN
+        SET NEW.PCRTest_Ct_Value = 0;
+    END IF;
+END;
+
+CREATE TRIGGER QuickTrigger
+BEFORE INSERT ON QuickTest
+FOR EACH ROW
+BEGIN
+    IF NEW.QuickTest_Ct_Value < 0 THEN
+        SET NEW.QuickTest_Ct_Value = 0;
+    END IF;
+END;
+
+CREATE TRIGGER RespiratoryRateTrigger
+BEFORE INSERT ON RespiratoryRate
+FOR EACH ROW
+BEGIN
+    IF NEW.RespiratoryRate_Number_Of_Breath_Per_Minute < 0 THEN
+        SET NEW.RespiratoryRate_Number_Of_Breath_Per_Minute = 0;
+    END IF;
+END;
+
+CREATE TRIGGER SPO2Trigger
+BEFORE INSERT ON SPO2
+FOR EACH ROW
+BEGIN
+    IF NEW.SPO2_Blood_Oxygen_Levels < 0 THEN
+        SET NEW.SPO2_Blood_Oxygen_Levels = 0;
+    END IF;
+END;
+
+-- 3. The commencement date of the treatment period, during which the camp 
+-- keeps a record of the doctor's treatment of the patient, must not be later than the end date.
+CREATE TRIGGER DischargeDateTrigger
+BEFORE INSERT ON DischargePatient 
+FOR EACH ROW
+BEGIN
+    DECLARE AdmittedDate DATE;
+
+    SELECT DISTINCT Admission_Date FROM Admission
+    WHERE NEW.DischargePatient_PatientID = Admission.Admission_PatientID
+    INTO AdmittedDate;
+
+    IF NEW.DischargePatient_Date < AdmittedDate THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Discharge Date must after Admission Date!';
+    END IF;
+END;
+
+-- 4. Patient’s Location History must always be updated 
+-- up-to-date whenever their room is changed.
+CREATE TRIGGER RoomChangeTrigger 
+AFTER UPDATE ON LocationHistory
+FOR EACH ROW
+BEGIN
+    UPDATE AdmittedPatient 
+    SET AdmittedPatient_BuildingID = NEW.LocationHistory_BuildingID,
+    AdmittedPatient_FloorID = NEW.LocationHistory_FloorID,
+    AdmittedPatient_RoomID = NEW.LocationHistory_RoomID
+    WHERE AdmittedPatient_PatientID = NEW.LocationHistory_Admitted_PatientID;
+END;
