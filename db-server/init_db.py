@@ -43,7 +43,7 @@ if __name__ == "__main__":
         # ext = os.path.splitext(file)[-1]
         ext = os.path.split(file)[-1]
 
-        if ext == ".sql":
+        if ext == "quaratine-camp-db.sql":
             query_statement = get_query_statement(file)
             for result in cursor.execute(query_statement, multi=True):
                 # Because iterator is "lazily updated", must iterate
