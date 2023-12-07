@@ -83,7 +83,7 @@ def main():
         ("DISCHARGE_PATIENT", "A2:B6", "template_dischargepatient.sql"),
         ("SYMPTOMS","A2:C9", "template_symptoms.sql"),
         ("TESTING","A2:D21","template_testing.sql"),
-        ("PCR_TEST", "A2:C6", "template_pcrtest.sql"),
+        ("PCR_TEST", "A2:C11", "template_pcrtest.sql"),
         ("RESPIRATORY_RATE", "A2:B6", "template_respiratoryrate.sql"),
         ("SPO2", "A2:B6", "template_spo2.sql"),
         ("QUICK_TEST", "A2:C6", "template_quicktest.sql")
