@@ -29,8 +29,8 @@ BEGIN
         FROM  Patient LEFT JOIN DischargePatient ON Patient.Patient_PatientID = DischargePatient.DischargePatient_PatientID
 		LEFT JOIN Admission ON Patient.Patient_PatientID = Admission.Admission_Date
 		LEFT JOIN AdmittedPatient ON Patient.Patient_PatientID = AdmittedPatient.AdmittedPatient_PatientID
-        WHERE Patient_Fullname = 'Nguyen Gia Khanh'
+        WHERE Patient_Fullname LIKE CONCAT('%', p_name, '%')
     ;
-END
+END$$
 
 DELIMITER ;
