@@ -391,3 +391,37 @@ BEGIN
     AdmittedPatient_RoomID = NEW.LocationHistory_RoomID
     WHERE AdmittedPatient_PatientID = NEW.LocationHistory_Admitted_PatientID;
 END;
+
+
+CREATE TABLE PatientHistory
+(
+    NurseID CHAR(9),
+    PatientID CHAR(9),
+    AdmittedDate DATE
+);
+
+CREATE TRIGGER RevisitAdmittedPatient
+AFTER UPDATE ON AdmittedPatient
+FOR EACH ROW
+BEGIN
+    INSERT INTO PatientHistory (AdmittedPatient_PatientID, AdmittedPatient_NurseID) 
+    VALUES (NEW.AdmittedPatient_PatientID, NEW.AdmittedPatient_NurseID);
+END;
+
+CREATE TRIGGER NewAdmittedPatient
+AFTER INSERT ON AdmittedPatient
+FOR EACH ROW
+BEGIN
+    INSERT INTO PatientHistory (PatientID, NurseID) 
+    VALUES (NEW.AdmittedPatient_PatientID, NEW.AdmittedPatient_NurseID);
+END;
+
+CREATE TRIGGER NewAdmission
+AFTER INSERT ON Admission
+FOR EACH ROW
+BEGIN
+    UPDATE PatientHistory SET AdmittedDate = NEW.Admission_Date
+    WHERE 
+        AdmittedDate IS NULL
+        AND PatientID = NEW.Admission_PatientID;
+END;
