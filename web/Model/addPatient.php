@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 // Insert patient table
-
+$conn->begin_transaction();
 $patientInfo = $data['patientInfo'];
 $patientInsertQuery = "INSERT INTO Patient (Patient_PatientID, Patient_Identity_Number, Patient_Address, Patient_Gender, Patient_Fullname, Patient_Phone) VALUES (
     '{$patientInfo['id']}', 
@@ -24,14 +24,24 @@ $patientInsertQuery = "INSERT INTO Patient (Patient_PatientID, Patient_Identity_
     '{$patientInfo['name']}', 
     '{$patientInfo['phone']}'
 )";
-$conn->query($patientInsertQuery);
+try {
+    $conn->query($patientInsertQuery);
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+    exit();
+}
 
 // Insert Comorbidities
 $comorbidityList = $data['comorbidityList'];
 foreach ($comorbidityList as $comorbidity) {
     $insertComorbidity = "INSERT INTO Comorbidity (Comorbidity_PatientID, Comorbidity_Comorbidity) 
                           VALUES ('{$patientInfo['id']}', '$comorbidity')";
-    $conn->query($insertComorbidity);
+    try {
+        $conn->query($insertComorbidity);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+        exit();
+    }
 }
 
 // Insert Symptoms
@@ -39,7 +49,12 @@ $symptomList = $data['symptomList'];
 foreach ($symptomList as $symptom) {
     $insertSymptom = "INSERT INTO Symptoms (Symptoms_Time, Symptoms_PatientID, Symptoms_Symptoms) 
                       VALUES ('{$symptom['date']}', '{$patientInfo['id']}', '{$symptom['symptom']}')";
-    $conn->query($insertSymptom);
+    try {
+        $conn->query($insertSymptom);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+        exit();
+    }
 }
 // Insert admittedpatient table
 $roomInfo = $data['roomInformation'];
@@ -50,7 +65,12 @@ $admittedPatientInsertQuery = "INSERT INTO AdmittedPatient (AdmittedPatient_Buil
     '{$patientInfo['id']}', 
     '{$roomInfo['nurseID']}'
 )";
-$conn->query($admittedPatientInsertQuery);
+try {
+    $conn->query($admittedPatientInsertQuery);
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+    exit();
+}
 // Insert admission table
 $admissionInfo = $data['admissionInfo'];
 $admissionInsertQuery = "INSERT INTO Admission (Admission_PatientID, Admission_StaffID, Admission_Date, Admission_Patient_Location) VALUES (
@@ -59,7 +79,12 @@ $admissionInsertQuery = "INSERT INTO Admission (Admission_PatientID, Admission_S
     '{$admissionInfo['admissionDate']}', 
     'Quaratine Camp' 
 )";
-$conn->query($admissionInsertQuery);
+try {
+    $conn->query($admissionInsertQuery);
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+    exit();
+}
 
 // Insert testing table
 $testingInfo = $data['testingInfo'];
@@ -70,7 +95,12 @@ foreach ($testingInfo as $test) {
         '{$admissionInfo['staffID']}', 
         '{$test['testDate']}'
     )";
-    $conn->query($testingInsertQuery);
+    try {
+        $conn->query($testingInsertQuery);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+        exit();
+    }
 
     // Insert data into specific test table 
     switch ($test['type']) {
@@ -80,21 +110,36 @@ foreach ($testingInfo as $test) {
                 '{$test['ctvalue']}', 
                 '{$test['result']}' 
             )";
-            $conn->query($pcrInsertQuery);
+            try {
+                $conn->query($pcrInsertQuery);
+            } catch (Exception $e) {
+                echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+                exit();
+            }
             break;
         case 'SPO2':
             $spo2InsertQuery = "INSERT INTO SPO2 (SPO2_TestID, SPO2_Blood_Oxygen_Levels) VALUES (
                 '{$test['testID']}', 
                 '{$test['bloodoxygenlevel']}' 
             )";
-            $conn->query($spo2InsertQuery);
+            try {
+                $conn->query($spo2InsertQuery);
+            } catch (Exception $e) {
+                echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+                exit();
+            }
             break;
         case 'Respiratory Rate':
             $respiratoryInsertQuery = "INSERT INTO RespiratoryRate (RespiratoryRate_TestID, RespiratoryRate_Number_Of_Breath_Per_Minute) VALUES (
                 '{$test['testID']}', 
                 '{$test['breathpermin']}' 
             )";
-            $conn->query($respiratoryInsertQuery);
+            try {
+                $conn->query($respiratoryInsertQuery);
+            } catch (Exception $e) {
+                echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+                exit();
+            }
             break;
         case 'Quick Test':
             $quickInsertQuery = "INSERT INTO QuickTest (QuickTest_TestID, QuickTest_Result, QuickTest_Ct_Value) VALUES (
@@ -102,7 +147,12 @@ foreach ($testingInfo as $test) {
                 '{$test['result']}', 
                 '{$test['ctvalue']}' 
             )";
-            $conn->query($quickInsertQuery);
+            try {
+                $conn->query($quickInsertQuery);
+            } catch (Exception $e) {
+                echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+                exit();
+            }
             break;
     }
 }
@@ -116,7 +166,12 @@ foreach ($treatmentInfo as $treatment) {
         '{$treatment['endDate']}', 
         '{$treatment['treatmentID']}' 
     )";
-    $conn->query($treatmentInsertQuery);
+    try {
+        $conn->query($treatmentInsertQuery);
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+        exit();
+    }
 
     // Insert perform table
     foreach ($treatment['doctorList'] as $doctorID) {
@@ -125,7 +180,12 @@ foreach ($treatmentInfo as $treatment) {
             '{$patientInfo['id']}', 
             '{$treatment['treatmentID']}' 
         )";
-        $conn->query($performInsertQuery);
+        try {
+            $conn->query($performInsertQuery);
+        } catch (Exception $e) {
+            echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+            exit();
+        }
     }
 
     // Insert medication table
@@ -139,12 +199,15 @@ foreach ($treatmentInfo as $treatment) {
             '{$medication['expirationDate']}', 
             '{$treatment['treatmentID']}' 
         )";
-        $conn->query($medicationInsertQuery);
+        try {
+            $conn->query($medicationInsertQuery);
+        } catch (Exception $e) {
+            echo json_encode(["status" => "error", "msg" => $e->getMessage()]);
+            exit();
+        }
     }
 }
-
+$conn->commit();
 $conn->close();
 
 echo json_encode(["status" => "Data inserted successfully"]);
-
-?>

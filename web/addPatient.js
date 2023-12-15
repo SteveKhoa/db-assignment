@@ -614,17 +614,24 @@ function form_submit() {
 
     // Use $.ajax method
     console.log(JSON.stringify(data));
+    console.log("/n/n/n");
 
-    $.ajax({
-        type: 'POST',  // HTTP method for the request
-        url: 'Model/addPatient.php',  // PHP file to which data is sent
-        data: JSON.stringify(data),  // Convert JSON object to a string
-        contentType: 'application/json',  // Set content type to JSON
-        success: function (response) {
-            window.alert('Data successfully sent to PHP file. Response:', response);
-        },
-        error: function (error) {
-            window.alert('Error sending data to PHP file:', error);
-        }
-    });
+    fetch("Model/addPatient.php", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            console.log(response);
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            if (data['status'] == "error") {
+                window.alert(`Error: ${data["msg"]}`);
+            }
+            else {
+                window.alert("Insert Successfully");
+            }
+        });
 }
