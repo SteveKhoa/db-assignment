@@ -404,7 +404,7 @@ CREATE TRIGGER RevisitAdmittedPatient
 AFTER UPDATE ON AdmittedPatient
 FOR EACH ROW
 BEGIN
-    INSERT INTO PatientHistory (AdmittedPatient_PatientID, AdmittedPatient_NurseID) 
+    INSERT INTO PatientHistory (PatientID, NurseID) 
     VALUES (NEW.AdmittedPatient_PatientID, NEW.AdmittedPatient_NurseID);
 END;
 

@@ -44,12 +44,15 @@ if __name__ == "__main__":
         ext = os.path.split(file)[-1]
 
         if ext == "quaratine-camp-db.sql":
-            query_statement = get_query_statement(file)
-            for result in cursor.execute(query_statement, multi=True):
-                # Because iterator is "lazily updated", must iterate
-                # the cursor in multi-query execution,
-                # otherwise, no query would execute.
-                pass
+            try:
+                query_statement = get_query_statement(file)
+                for result in cursor.execute(query_statement, multi=True):
+                    # Because iterator is "lazily updated", must iterate
+                    # the cursor in multi-query execution,
+                    # otherwise, no query would execute.
+                    pass
+            except mysql.connector.errors.Error as e:
+                print(e)
         elif ext == "insert.py":
             insert_db.insert.main()
         elif ext == "init_proc.py":
